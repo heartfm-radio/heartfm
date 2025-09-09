@@ -134,6 +134,7 @@ body {
   padding: 8px;
   margin: 8px 0;
   font-size: 0.8rem;
+  text-align: left
 }
 .now-playing {
   background: rgba(255,255,255,0.1);
@@ -198,21 +199,6 @@ body {
   font-size: 0.8rem;
   color: #e0e0e0;
 }
-.equalizer {
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  height: 30px;
-  margin-top: 15px;
-  gap: 2px;
-}
-.bar { width: 3px; background:#ff5252; border-radius:1.5px; height:4px; animation:equalize 1.5s infinite ease-in-out;}
-.bar:nth-child(1){animation-delay:0s;}
-.bar:nth-child(2){animation-delay:0.1s;}
-.bar:nth-child(3){animation-delay:0.2s;}
-.bar:nth-child(4){animation-delay:0.3s;}
-.bar:nth-child(5){animation-delay:0.4s;}
-@keyframes equalize {0%,100%{height:4px;}50%{height:22px;}}
 
 footer { margin-top:20px; text-align:center; color:#b0b0b0; font-size:0.7rem; }
 
@@ -250,9 +236,9 @@ footer { margin-top:20px; text-align:center; color:#b0b0b0; font-size:0.7rem; }
   </div>
 
   <div class="notice" id="notice">
-Погода в Барнауле на 9 сентября 2025 года:
-19:00: температура +16 °C, пасмурно, ветер до 4 м/с, СЗ.
-23:00: температура +13 °C, облачно с прояснениями, ветер 3 до 4 м/с, З.
+Погода в Барнауле на 9 сентября:<br>
+19:00: +16 °C, пасмурно, ветер до 4 м/с, СЗ<br>
+23:00: +13 °C, облачно с прояснениями, ветер 3 до 4 м/с, З.<br>
   </div>
 
   <div class="now-playing">
@@ -271,10 +257,6 @@ footer { margin-top:20px; text-align:center; color:#b0b0b0; font-size:0.7rem; }
     <div class="volume-control">
       <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="0.7">
     </div>
-  </div>
-
-  <div class="equalizer">
-    <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
   </div>
 
   <div class="status" id="status">Готово к воспроизведению</div>
@@ -296,12 +278,12 @@ footer { margin-top:20px; text-align:center; color:#b0b0b0; font-size:0.7rem; }
 const audio = new Audio('https://radio.gtrk22.ru/heartfm');
 audio.crossOrigin = "anonymous";
 audio.volume = 0.7;
+
 const playButton = document.getElementById('playButton');
 const volumeSlider = document.getElementById('volumeSlider');
 const trackNameEl = document.getElementById('trackName');
 const artistNameEl = document.getElementById('artistName');
 const statusEl = document.getElementById('status');
-const container = document.querySelector('.container');
 
 playButton.addEventListener('click', () => {
   if(audio.paused) {
