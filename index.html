@@ -229,13 +229,12 @@ const bars = document.querySelectorAll('.bar');
 
 let audioCtx, analyser, source, dataArray;
 
-playButton.addEventListener('click', () => {
-  if(audio.paused) {
-    audio.play().then(()=> {
-      playButton.classList.add('playing');
-      statusEl.textContent = 'Воспроизведение...';
-      if(!audioCtx){
+playButton.addEventListener('click', async () => {
+  if (audio.paused) {
+    try {
+      if (!audioCtx) {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        await audioCtx.resume(); // ✅ нужно для iOS Safari
         source = audioCtx.createMediaElementSource(audio);
         analyser = audioCtx.createAnalyser();
         source.connect(analyser);
@@ -244,10 +243,13 @@ playButton.addEventListener('click', () => {
         dataArray = new Uint8Array(analyser.frequencyBinCount);
         animateVisualizer();
       }
-    }).catch(err => {
+      await audio.play();
+      playButton.classList.add('playing');
+      statusEl.textContent = 'Воспроизведение...';
+    } catch (err) {
       console.error(err);
-      statusEl.textContent = 'Нажмите ещё раз для воспроизведения на мобильных устройствах';
-    });
+      statusEl.textContent = 'Нажмите ещё раз для воспроизведения на iPhone';
+    }
   } else {
     audio.pause();
     playButton.classList.remove('playing');
@@ -264,7 +266,7 @@ function animateVisualizer(){
   if(analyser){
     analyser.getByteFrequencyData(dataArray);
     bars.forEach((bar, i)=>{
-      const height = dataArray[i] / 8 + 5; // масштабируем данные
+      const height = dataArray[i] / 8 + 5;
       bar.style.height = height + 'px';
     });
   }
