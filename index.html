@@ -34,40 +34,105 @@ body {
 }
 .logo {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  margin-bottom: 10px;
+  justify-content: center;
+  margin-bottom: 15px;
 }
-.logo img {
-  max-width: 190px;
-  height: auto;
-}
-
-/* Анимированный визуализатор */
-.visualizer {
+.speaker-icon {
+  width: 45px;
+  height: 45px;
+  flex-shrink: 0;
+  position: relative;
   display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  width: 100%;
-  max-width: 320px;
-  height: 20px;
-  margin: 12px 0;
-  gap: 2px;
+  align-items: center;
+  justify-content: center;
 }
-.bar {
-  background: #ff5252;
-  width: 6px;
-  border-radius: 3px;
-  height: 5px;
-  transition: height 0.1s ease;
+.speaker-body {
+  width: 38px;
+  height: 38px;
+  background: linear-gradient(135deg, #ff5252, #ff7675);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(255, 82, 82, 0.4);
+  animation: pulse 2s infinite ease-in-out;
 }
+.speaker-grill {
+  width: 18px;
+  height: 18px;
+  background: rgba(0,0,0,0.3);
+  border-radius: 50%;
+  overflow: hidden;
+  position: relative;
+}
+.speaker-grill::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 7px;
+  height: 7px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+.sound-waves {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 45px;
+  height: 45px;
+}
+.wave {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border: 2px solid #ff5252;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+}
+.wave-1 { width: 35px; height: 35px; animation: soundWave 2s infinite ease-in-out; }
+.wave-2 { width: 45px; height: 45px; animation: soundWave 2s infinite 0.3s ease-in-out; }
+.wave-3 { width: 55px; height: 55px; animation: soundWave 2s infinite 0.6s ease-in-out; }
+@keyframes pulse {0%,100%{transform:scale(1);}50%{transform:scale(1.05);}}
+@keyframes soundWave {0%{opacity:0;transform:translate(-50%,-50%) scale(0.5);}50%{opacity:0.6;}100%{opacity:0;transform:translate(-50%,-50%) scale(1.2);} }
+.playing .wave { animation-duration: 1s; }
 
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0 12px;
+}
+.logo-text h1 {
+  font-size: 1.6rem;
+  font-weight: 850;
+  color: #ff5252;
+  text-shadow: 0 0 40px rgba(255,82,82,0.8);
+  letter-spacing: 1px;
+  font-family: 'Arial Narrow Bold','Haettenschweiler','Arial Narrow Bold',sans-serif;
+  text-transform: uppercase;
+  margin-bottom: 0;
+  line-height: 1;
+}
+.logo-text p {
+  color: #e0e0e0;
+  margin-top: 3px;
+  font-size: 0.65rem;
+  line-height: 1;
+  margin-bottom: 0;
+  text-align: center;
+}
 .notice {
   background: rgba(255,82,82,0.2);
   border: 1px solid #ff5252;
   border-radius: 8px;
   padding: 8px;
-  margin: 5px 0 12px 0;
+  margin: 8px 0;
   font-size: 0.8rem;
   text-align: left;
 }
@@ -146,24 +211,33 @@ footer {
 .social-link { display:inline-flex; align-items:center; justify-content:center; padding:8px; background: rgba(255,255,255,0.1); border-radius:50%; transition: all 0.3s ease; text-decoration:none; }
 .social-link:hover { background: rgba(255,255,255,0.2); transform: scale(1.1); }
 .telegram-icon,.vk-icon,.whatsapp-icon { width:22px; height:22px; fill:white; }
+.social-text { margin-top:6px; font-size:0.7rem; color:#b0b0b0; text-align:center; }
+
 </style>
 </head>
 <body>
 <div class="container">
   <div class="logo">
-    <img src="https://i.postimg.cc/rFF9SHFJ/HEART-FM-online-player.png" alt="HEART FM">
-  </div>
-<br>
-  <!-- Анимированный визуализатор -->
-  <div class="visualizer">
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
+    <div class="speaker-icon" id="speakerIconLeft">
+      <div class="sound-waves">
+        <div class="wave wave-1"></div>
+        <div class="wave wave-2"></div>
+        <div class="wave wave-3"></div>
+      </div>
+      <div class="speaker-body"><div class="speaker-grill"></div></div>
+    </div>
+    <div class="logo-text">
+      <h1>HEART FM</h1>
+      <p>онлайн плеер</p>
+    </div>
+    <div class="speaker-icon" id="speakerIconRight">
+      <div class="sound-waves">
+        <div class="wave wave-1"></div>
+        <div class="wave wave-2"></div>
+        <div class="wave wave-3"></div>
+      </div>
+      <div class="speaker-body"><div class="speaker-grill"></div></div>
+    </div>
   </div>
 
   <div class="notice" id="notice">
@@ -192,24 +266,18 @@ footer {
 
   <div class="status" id="status">Готово к воспроизведению</div>
 
-<div class="social-links">
-  <a href="https://t.me/heartfmradio" class="social-link" target="_blank" title="Наш Telegram-канал">
-    <svg class="telegram-icon" viewBox="0 0 24 24">
-      <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.14.141-.259.259-.374.261l.213-3.053 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.136-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
-    </svg>
-  </a>
-  <a href="https://vk.com/radio_heartfm" class="social-link" target="_blank" title="Наша группа ВКонтакте">
-    <svg class="vk-icon" viewBox="0 0 24 24">
-      <path d="M12 0C5.372 0 0 5.372 0 12c0 6.628 5.372 12 12 12s12-5.372 12-12c0-6.628-5.372-12-12-12zm5.58 16.3h-1.27c-.48 0-.62-.34-1.49-1.21-.75-.74-1.07-.83-1.25-.83-.26 0-.34.07-.34.4v1.13c0 .29-.1.51-.94.51-1.39 0-2.94-.85-4.01-2.43-1.63-2.32-2.06-4.07-2.06-4.42 0-.19.07-.37.4-.37h1.27c.3 0 .42.13.54.45.58 1.65 1.56 3.09 1.97 3.09.15 0 .22-.07.22-.46v-1.77c-.05-.82-.48-.89-.48-1.26 0-.15.12-.3.32-.3h2.01c.24 0 .33.1.33.44v2.39c0 .26.12.35.2.35.15 0 .28-.09.55-.35 1.01-1.14 1.73-2.9 1.73-2.9.09-.2.21-.38.53-.38h1.27c.38 0 .46.18.38.43-.16.73-1.73 2.97-1.73 2.97-.14.23-.2.33 0 .56.13.16.56.55.85.9.53.6.92 1.1 1.02 1.46.1.35-.08.55-.45.55z"/>
-    </svg>
-  </a>
-  <a href="https://wa.me/79030731059" class="social-link" target="_blank" title="Написать в WhatsApp">
-    <svg class="whatsapp-icon" viewBox="0 0 24 24">
-      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.993c-.003 5.452-4.437 9.886-9.888 9.886m8.413-18.297A11.815 11.815 0 0012.053 0C5.49 0 .145 5.345.142 11.907c0 2.096.547 4.142 1.588 5.945L0 24l6.347-1.664a11.908 11.908 0 005.702 1.454h.005c6.565 0 11.91-5.344 11.914-11.905a11.86 11.86 0 00-3.689-8.413"/>
-    </svg>
-  </a>
+  <div class="social-links">
+    <a href="https://t.me/heartfmradio" class="social-link" target="_blank" title="Наш Telegram-канал">
+      <svg class="telegram-icon" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.14.141-.259.259-.374.261l.213-3.053 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.136-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/></svg>
+    </a>
+    <a href="https://vk.com/radio_heartfm" class="social-link" target="_blank" title="Наша группа ВКонтакте">
+      <svg class="vk-icon" viewBox="0 0 24 24"><path d="M12 0C5.372 0 0 5.372 0 12c0 6.628 5.372 12 12 12s12-5.372 12-12c0-6.628-5.372-12-12-12zm5.58 16.3h-1.27c-.48 0-.62-.34-1.49-1.21-.75-.74-1.07-.83-1.25-.83-.26 0-.34.07-.34.4v1.13c0 .29-.1.51-.94.51-1.39 0-2.94-.85-4.01-2.43-1.63-2.32-2.06-4.07-2.06-4.42 0-.19.07-.37.4-.37h1.27c.3 0 .42.13.54.45.58 1.65 1.56 3.09 1.97 3.09.15 0 .22-.07.22-.46v-1.77c-.05-.82-.48-.89-.48-1.26 0-.15.12-.3.32-.3h2.01c.24 0 .33.1.33.44v2.39c0 .26.12.35.2.35.15 0 .28-.09.55-.35 1.01-1.14 1.73-2.9 1.73-2.9.09-.2.21-.38.53-.38h1.27c.38 0 .46.18.38.43-.16.73-1.73 2.97-1.73 2.97-.14.23-.2.33 0 .56.13.16.56.55.85.9.53.6.92 1.1 1.02 1.46.1.35-.08.55-.45.55z"/></svg>
+    </a>
+    <a href="https://wa.me/79030731059" class="social-link" target="_blank" title="Написать в WhatsApp">
+      <svg class="whatsapp-icon" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.993c-.003 5.452-4.437 9.886-9.888 9.886m8.413-18.297A11.815 11.815 0 0012.053 0C5.49 0 .145 5.345.142 11.907c0 2.096.547 4.142 1.588 5.945L0 24l6.347-1.664a11.908 11.908 0 005.702 1.454h.005c6.565 0 11.91-5.344 11.914-11.905a11.86 11.86 0 00-3.689-8.413"/></svg>
+    </a>
+  </div>
 </div>
-
 
 <footer>
   radio.popov для HEART FM | 2025
@@ -225,31 +293,16 @@ const volumeSlider = document.getElementById('volumeSlider');
 const trackNameEl = document.getElementById('trackName');
 const artistNameEl = document.getElementById('artistName');
 const statusEl = document.getElementById('status');
-const bars = document.querySelectorAll('.bar');
 
-let audioCtx, analyser, source, dataArray;
-
-playButton.addEventListener('click', async () => {
-  if (audio.paused) {
-    try {
-      if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        await audioCtx.resume(); // ✅ нужно для iOS Safari
-        source = audioCtx.createMediaElementSource(audio);
-        analyser = audioCtx.createAnalyser();
-        source.connect(analyser);
-        analyser.connect(audioCtx.destination);
-        analyser.fftSize = 64;
-        dataArray = new Uint8Array(analyser.frequencyBinCount);
-        animateVisualizer();
-      }
-      await audio.play();
+playButton.addEventListener('click', () => {
+  if(audio.paused) {
+    audio.play().then(()=> {
       playButton.classList.add('playing');
       statusEl.textContent = 'Воспроизведение...';
-    } catch (err) {
+    }).catch(err => {
       console.error(err);
-      statusEl.textContent = 'Нажмите ещё раз для воспроизведения на iPhone';
-    }
+      statusEl.textContent = 'Нажмите ещё раз для воспроизведения на мобильных устройствах';
+    });
   } else {
     audio.pause();
     playButton.classList.remove('playing');
@@ -260,17 +313,6 @@ playButton.addEventListener('click', async () => {
 volumeSlider.addEventListener('input', (e)=>{
   audio.volume = e.target.value;
 });
-
-function animateVisualizer(){
-  requestAnimationFrame(animateVisualizer);
-  if(analyser){
-    analyser.getByteFrequencyData(dataArray);
-    bars.forEach((bar, i)=>{
-      const height = dataArray[i] / 8 + 5;
-      bar.style.height = height + 'px';
-    });
-  }
-}
 
 async function fetchCurrentTrack() {
   try {
