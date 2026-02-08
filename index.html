@@ -2,102 +2,139 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8" />
-  <title> HEART FM </title>
+  <title>HEART FM — онлайн плеер</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    body {
-      font-family: sans-serif;
+    :root{
+      --bg: #111;
+      --card: #1a1a1a;
+      --text: #eaeaea;
+      --accent: #c21d1d; /* приглушенно-красный */
+      --accent-dark: #8a0f0f;
+      --muted: #aaaaaa;
+    }
+
+    • { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; background: linear-gradient(#0e0e0e, #121212); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
+
+    .wrapper {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      align-items: center;
+      justify-items: center;
+      padding: 40px 20px;
+    }
+
+    /* Заголовок HEART FM */
+    .brand {
+      font-family: Impact, "Trebuchet MS", Arial, sans-serif;
+      font-weight: 700;
+      font-size: 44px;
+      letter-spacing: 2px;
+      color: #fff;
+      text-shadow: 0 2px 0 rgba(0,0,0,.3);
+      text-transform: uppercase;
+      line-height: 1;
+      user-select: none;
+    }
+
+    /* Поддержка широкого спектра устройств: имитация удачного отображения IMPACT-подобного шрифта */
+    @supports (font-family: "Impact") {
+      .brand { font-family: Impact, "Trebuchet MS", Arial, sans-serif; }
+    }
+
+    .card {
+      width: min(520px, 92vw);
+      background: rgba(18,18,18,.9);
+      border: 1px solid rgba(0,0,0,.4);
+      border-radius: 14px;
+      padding: 28px 28px 26px;
+      box-shadow: 0 20px 40px rgba(0,0,0,.5);
+      display: grid;
+      gap: 22px;
+      align-items: center;
+      justify-items: center;
+    }
+
+    /* Кнопка воспроизведения/паузы */
+    .playPause {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      border: none;
+      background: radial-gradient(circle at 30% 30%, #ff5a5a 0%, #d41d1d 40%, #a00 100%);
+      color: white;
+      font-size: 28px;
+      cursor: pointer;
       display: grid;
       place-items: center;
-      height: 100vh;
-      margin: 0;
-      background: #f5f5f5;
+      box-shadow: 0 6px 14px rgba(0,0,0,.4);
+      transition: transform .08s ease;
     }
-    .player {
-      display: inline-flex;
+    .playPause:active { transform: scale(0.95); }
+
+    /* Регулятор громкости */
+    .volumeRow {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 60px 1fr 60px;
       align-items: center;
       gap: 12px;
-      padding: 12px 16px;
-      border-radius: 12px;
-      background: #ffffff;
-      box-shadow: 0 4px 12px rgba(0,0,0,.08);
     }
-    button {
-      width: 56px;
-      height: 56px;
-      border: none;
+    .volumeLabel {
+      font-size: 12px;
+      color: var(--muted);
+      text-align: right;
+    }
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 8px;
+      border-radius: 5px;
+      background: #333;
+      outline: none;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
       border-radius: 50%;
-      background: #1e88e5;
-      color: white;
-      font-size: 24px;
+      background: #fff;
+      border: 2px solid #c21d1d;
+      box-shadow: 0 2px 6px rgba(0,0,0,.4);
       cursor: pointer;
     }
-    button:active { transform: scale(0.95); }
-    .status {
-      font-size: 14px;
-      color: #555;
+
+    /* Соцсети по центру снизу */
+    .social {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+    }
+    .social a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #2a2a2a;
+      color: #fff;
+      text-decoration: none;
+      box-shadow: inset 0 0 0 rgba(0,0,0,.0);
+      transition: transform .1s ease;
+    }
+    .social a:hover { transform: translateY(-1px); background: #3a3a3a; }
+
+    /* Цветовая гармония: приглушенно-черно-красная тема на всей странице */
+    @media (prefers-color-scheme: light) {
+      :root { --bg: #f7f7f7; --text: #111; }
+      .wrapper { background: linear-gradient(#f7f7f7, #f0f0f0); }
+      .card { background: #fff; border-color: #e5e5e5; }
     }
   </style>
 </head>
 <body>
-  <div class="player" aria-label="Мини-плеер онлайн радиостанции">
-    <button id="playPause" title="Воспроизвести/пауза" aria-label="Пуск/Стоп">▶</button>
-    <div class="status" id="status">Готов к воспроизведению</div>
-  </div>
-
-  <audio id="stream" preload="none" crossorigin="anonymous"></audio>
-
-  <script>
-    // Потоковая ссылка
-    const STREAM_URL = "https://icecast.gtrk22.ru:8443/heartfm";
-
-    const audio = document.getElementById('stream');
-    const btn = document.getElementById('playPause');
-    const status = document.getElementById('status');
-
-    let isPlaying = false;
-
-    // Настройка источника
-    audio.src = STREAM_URL;
-    audio.type = "audio/mpeg";
-
-    // Обработчик кнопки
-    btn.addEventListener('click', async () => {
-      try {
-        if (!isPlaying) {
-          // Попытка воспроизведения
-          await audio.play();
-          isPlaying = true;
-          btn.textContent = "❚❚";
-          status.textContent = "Идёт воспроизведение";
-        } else {
-          audio.pause();
-          isPlaying = false;
-          btn.textContent = "▶";
-          status.textContent = "Пауза";
-        }
-      } catch (e) {
-        status.textContent = "Не удалось воспроизвести поток";
-      }
-    });
-
-    // Обновление на случай автоматического начала воспроизведения браузером
-    audio.addEventListener('play', () => {
-      isPlaying = true;
-      btn.textContent = "❚❚";
-      status.textContent = "Идёт воспроизведение";
-    });
-
-    audio.addEventListener('pause', () => {
-      isPlaying = false;
-      btn.textContent = "▶";
-      status.textContent = "Пауза";
-    });
-
-    // По желанию можно добавить обработчик ошибок
-    audio.addEventListener('error', () => {
-      status.textContent = "Ошибка воспроизведения потока";
-    });
-  </script>
-</body>
-</html>
