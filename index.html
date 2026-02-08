@@ -282,7 +282,7 @@ footer {
 </footer>
 
 <script>
-const audio = new Audio('https://radio.gtrk22.ru/heartfm');
+const audio = new Audio('https://icecast.gtrk22.ru:8443/heartfm');
 audio.crossOrigin = "anonymous";
 audio.volume = 0.7;
 
@@ -314,7 +314,7 @@ volumeSlider.addEventListener('input', (e)=>{
 
 async function fetchCurrentTrack() {
   try {
-    const res = await fetch('https://radio.gtrk22.ru/heartfm.xspf');
+    const res = await fetch('https://icecast.gtrk22.ru:8443');
     const text = await res.text();
     const parser = new DOMParser();
     const xml = parser.parseFromString(text,"text/xml");
