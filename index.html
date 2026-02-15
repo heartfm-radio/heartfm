@@ -68,6 +68,21 @@ button:active {
     color: #aa0000;
 }
 
+.links {
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+.links a {
+    color: #ff0000;
+    text-decoration: none;
+}
+
+.links a:hover {
+    background: #ff0000;
+    color: #000;
+}
+
 @media (max-width: 480px) {
     .header {
         font-size: 20px;
@@ -99,6 +114,12 @@ button:active {
 
 <div class="line">
 ------------------------------------------------------------
+</div>
+
+<div class="links">
+    > <a href="https://t.me/heartfmradio" target="_blank">telegram</a>  
+    | <a href="https://vk.com/radio_heartfm" target="_blank">vk</a>  
+    | <a href="https://max.ru/join/ShDwgYFEq3Rj5EgR2VsWFTFZDQfN6i8RlAIsKBTXR1c" target="_blank">max</a>
 </div>
 
 </div>
@@ -134,7 +155,7 @@ btn.addEventListener("click", async () => {
     }
 });
 
-/* Автопереподключение если поток оборвался */
+/* Автопереподключение */
 audio.addEventListener("error", () => {
     statusLine.textContent = "-- reconnecting... --";
     setTimeout(() => {
