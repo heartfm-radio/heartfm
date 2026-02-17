@@ -22,6 +22,7 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
+  transition: color 0.3s ease;
 }
 
 .wrapper {
@@ -45,6 +46,7 @@ body {
 .player-box {
   border: 2px dashed var(--основной-цвет);
   padding: 20px;
+  transition: border 0.3s ease;
 }
 
 button {
@@ -55,6 +57,7 @@ button {
   font-family: monospace;
   font-size: 16px;
   cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 button:active {
@@ -109,7 +112,7 @@ button:active {
   display: inline-block;
   width: 18px;
   height: 18px;
-  margin: 0 6px;
+  margin: 0 5px;
   cursor: pointer;
   border: 2px solid #222;
 }
@@ -150,9 +153,9 @@ button:active {
   </div>
 
   <div class="social">
-    <a href="https://t.me/heartfmradio" target="_blank">телеграм</a> |
+    <a href="https://t.me/heartfmradio" target="_blank">telegram</a> |
     <a href="https://vk.com/radio_heartfm" target="_blank">вк</a> |
-    <a href="https://max.ru/join/ShDwgYFEq3Rj5EgR2VsWFTFZDQfN6i8RlAIsKBTXR1c" target="_blank">макс</a>
+    <a href="https://max.ru/join/ShDwgYFEq3Rj5EgR2VsWFTFZDQfN6i8RlAIsKBTXR1c" target="_blank">max</a>
   </div>
 
   <div class="phone" id="phoneCopy">
@@ -163,6 +166,9 @@ button:active {
     <span class="color-btn" style="background:#ffff00" onclick="сменитьЦвет('жёлтый')"></span>
     <span class="color-btn" style="background:#00ff00" onclick="сменитьЦвет('зелёный')"></span>
     <span class="color-btn" style="background:#ff0000" onclick="сменитьЦвет('красный')"></span>
+    <span class="color-btn" style="background:#ffffff" onclick="сменитьЦвет('белый')"></span>
+    <span class="color-btn" style="background:#ff8800" onclick="сменитьЦвет('оранжевый')"></span>
+    <span class="color-btn" style="background:#bb00ff" onclick="сменитьЦвет('фиолетовый')"></span>
   </div>
 
 </div>
@@ -180,7 +186,6 @@ const телефон = document.getElementById("phoneCopy");
 
 let играет = false;
 
-/* ПУСК / СТОП */
 кнопка.addEventListener("click", async () => {
   if (!играет) {
     try {
@@ -199,7 +204,6 @@ let играет = false;
   }
 });
 
-/* Переподключение */
 аудио.addEventListener("error", () => {
   строкаСтатуса.textContent = "-- переподключение... --";
   setTimeout(() => {
@@ -210,7 +214,6 @@ let играет = false;
   }, 3000);
 });
 
-/* Получение трека */
 async function получитьТрек() {
   try {
     const ответ = await fetch("https://icecast.gtrk22.ru:8443/status-json.xsl");
@@ -221,11 +224,10 @@ async function получитьТрек() {
       источник = источник.find(s => s.listenurl.includes("heartfm"));
     }
 
-    if (источник && источник.title) {
-      названиеТрека.textContent = "> " + источник.title;
-    } else {
-      названиеТрека.textContent = "-- нет данных о треке --";
-    }
+    названиеТрека.textContent = источник && источник.title
+      ? "> " + источник.title
+      : "-- нет данных о треке --";
+
   } catch {
     названиеТрека.textContent = "-- сигнал потерян --";
   }
@@ -234,7 +236,6 @@ async function получитьТрек() {
 setInterval(получитьТрек, 10000);
 получитьТрек();
 
-/* Копирование телефона */
 телефон.addEventListener("click", async () => {
   try {
     await navigator.clipboard.writeText(телефон.textContent);
@@ -244,30 +245,24 @@ setInterval(получитьТрек, 10000);
   }
 });
 
-/* Смена цвета */
 function сменитьЦвет(цвет) {
   const корень = document.documentElement;
 
-  if (цвет === 'жёлтый') {
-    корень.style.setProperty('--основной-цвет', '#ffff00');
-    корень.style.setProperty('--тёмный-цвет', '#888800');
-    корень.style.setProperty('--средний-цвет', '#aaaa00');
-    корень.style.setProperty('--светлый-цвет', '#ffff66');
-  }
+  const темы = {
+    'жёлтый': ['#ffff00','#888800','#aaaa00','#ffff66'],
+    'зелёный': ['#00ff00','#008800','#00aa00','#66ff66'],
+    'красный': ['#ff0000','#880000','#aa0000','#ff4444'],
+    'белый': ['#ffffff','#888888','#bbbbbb','#ffffff'],
+    'оранжевый': ['#ff8800','#aa5500','#cc6600','#ffbb66'],
+    'фиолетовый': ['#bb00ff','#660088','#8800aa','#dd66ff']
+  };
 
-  if (цвет === 'зелёный') {
-    корень.style.setProperty('--основной-цвет', '#00ff00');
-    корень.style.setProperty('--тёмный-цвет', '#008800');
-    корень.style.setProperty('--средний-цвет', '#00aa00');
-    корень.style.setProperty('--светлый-цвет', '#66ff66');
-  }
+  const [осн, тёмн, средн, светл] = темы[цвет];
 
-  if (цвет === 'красный') {
-    корень.style.setProperty('--основной-цвет', '#ff0000');
-    корень.style.setProperty('--тёмный-цвет', '#880000');
-    корень.style.setProperty('--средний-цвет', '#aa0000');
-    корень.style.setProperty('--светлый-цвет', '#ff4444');
-  }
+  корень.style.setProperty('--основной-цвет', осн);
+  корень.style.setProperty('--тёмный-цвет', тёмн);
+  корень.style.setProperty('--средний-цвет', средн);
+  корень.style.setProperty('--светлый-цвет', светл);
 }
 </script>
 
