@@ -68,6 +68,32 @@ button:active {
   color: #aa0000;
 }
 
+.social {
+  margin-top: 20px;
+  font-size: 12px;
+  color: #aa0000;
+}
+
+.social a {
+  color: #aa0000;
+  text-decoration: none;
+}
+
+.social a:hover {
+  color: #ff0000;
+}
+
+.phone {
+  margin-top: 6px;
+  font-size: 12px;
+  color: #880000;
+  cursor: pointer;
+}
+
+.phone:hover {
+  color: #ff0000;
+}
+
 @media (max-width: 480px) {
   .header {
     font-size: 20px;
@@ -108,6 +134,16 @@ button:active {
     ------------------------------------------------------------
   </div>
 
+  <div class="social">
+    <a href="https://t.me/heartfmradio" target="_blank">telegram</a> |
+    <a href="https://vk.com/radio_heartfm" target="_blank">вк</a> |
+    <a href="https://max.ru/join/ShDwgYFEq3Rj5EgR2VsWFTFZDQfN6i8RlAIsKBTXR1c" target="_blank">max</a>
+  </div>
+
+  <div class="phone" id="phoneCopy">
+    +79030731059
+  </div>
+
 </div>
 
 <audio id="radio" preload="none">
@@ -119,6 +155,7 @@ const аудио = document.getElementById("radio");
 const кнопка = document.getElementById("playBtn");
 const названиеТрека = document.getElementById("trackName");
 const строкаСтатуса = document.getElementById("statusLine");
+const телефон = document.getElementById("phoneCopy");
 
 let играет = false;
 
@@ -144,7 +181,7 @@ let играет = false;
 
 });
 
-/* Автопереподключение если поток оборвался */
+/* Автопереподключение */
 аудио.addEventListener("error", () => {
   строкаСтатуса.textContent = "-- переподключение... --";
 
@@ -181,6 +218,16 @@ async function получитьТрек() {
 
 setInterval(получитьТрек, 10000);
 получитьТрек();
+
+/* Копирование телефона */
+телефон.addEventListener("click", async () => {
+  try {
+    await navigator.clipboard.writeText(телефон.textContent);
+    строкаСтатуса.textContent = "-- номер скопирован --";
+  } catch (ошибка) {
+    строкаСтатуса.textContent = "-- ошибка копирования --";
+  }
+});
 </script>
 
 </body>
