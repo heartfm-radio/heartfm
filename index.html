@@ -6,10 +6,17 @@
 <title>HEART FM</title>
 
 <style>
+:root {
+  --основной-цвет: #ff0000;
+  --тёмный-цвет: #880000;
+  --средний-цвет: #aa0000;
+  --светлый-цвет: #ff4444;
+}
+
 body {
   margin: 0;
   background: #000;
-  color: #ff0000;
+  color: var(--основной-цвет);
   font-family: monospace;
   display: flex;
   justify-content: center;
@@ -30,20 +37,20 @@ body {
 }
 
 .line {
-  color: #880000;
+  color: var(--тёмный-цвет);
   margin: 10px 0;
   word-break: break-all;
 }
 
 .player-box {
-  border: 2px dashed #ff0000;
+  border: 2px dashed var(--основной-цвет);
   padding: 20px;
 }
 
 button {
   background: black;
-  color: #ff0000;
-  border: 2px solid #ff0000;
+  color: var(--основной-цвет);
+  border: 2px solid var(--основной-цвет);
   padding: 12px 30px;
   font-family: monospace;
   font-size: 16px;
@@ -51,7 +58,7 @@ button {
 }
 
 button:active {
-  background: #ff0000;
+  background: var(--основной-цвет);
   color: black;
 }
 
@@ -59,49 +66,57 @@ button:active {
   margin-top: 15px;
   font-size: 14px;
   min-height: 20px;
-  color: #ff4444;
+  color: var(--светлый-цвет);
 }
 
 .status {
   margin-top: 8px;
   font-size: 12px;
-  color: #aa0000;
+  color: var(--средний-цвет);
 }
 
 .social {
   margin-top: 20px;
   font-size: 12px;
-  color: #aa0000;
+  color: var(--средний-цвет);
 }
 
 .social a {
-  color: #aa0000;
+  color: var(--средний-цвет);
   text-decoration: none;
 }
 
 .social a:hover {
-  color: #ff0000;
+  color: var(--основной-цвет);
 }
 
 .phone {
   margin-top: 6px;
   font-size: 12px;
-  color: #880000;
+  color: var(--тёмный-цвет);
   cursor: pointer;
 }
 
 .phone:hover {
-  color: #ff0000;
+  color: var(--основной-цвет);
+}
+
+.palette {
+  margin-top: 15px;
+}
+
+.color-btn {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  margin: 0 6px;
+  cursor: pointer;
+  border: 2px solid #222;
 }
 
 @media (max-width: 480px) {
-  .header {
-    font-size: 20px;
-  }
-
-  button {
-    width: 100%;
-  }
+  .header { font-size: 20px; }
+  button { width: 100%; }
 }
 </style>
 </head>
@@ -144,6 +159,12 @@ button:active {
     +79030731059
   </div>
 
+  <div class="palette">
+    <span class="color-btn" style="background:#ffff00" onclick="сменитьЦвет('жёлтый')"></span>
+    <span class="color-btn" style="background:#00ff00" onclick="сменитьЦвет('зелёный')"></span>
+    <span class="color-btn" style="background:#ff0000" onclick="сменитьЦвет('красный')"></span>
+  </div>
+
 </div>
 
 <audio id="radio" preload="none">
@@ -161,30 +182,26 @@ let играет = false;
 
 /* ПУСК / СТОП */
 кнопка.addEventListener("click", async () => {
-
   if (!играет) {
     try {
       await аудио.play();
       кнопка.textContent = "■ СТОП";
       строкаСтатуса.textContent = "-- В ЭФИРЕ --";
       играет = true;
-    } catch (ошибка) {
+    } catch {
       строкаСтатуса.textContent = "-- воспроизведение заблокировано --";
     }
-
   } else {
     аудио.pause();
     кнопка.textContent = "▶ ПУСК";
     строкаСтатуса.textContent = "-- остановлено --";
     играет = false;
   }
-
 });
 
-/* Автопереподключение */
+/* Переподключение */
 аудио.addEventListener("error", () => {
   строкаСтатуса.textContent = "-- переподключение... --";
-
   setTimeout(() => {
     if (играет) {
       аудио.load();
@@ -193,12 +210,11 @@ let играет = false;
   }, 3000);
 });
 
-/* Получение текущего трека */
+/* Получение трека */
 async function получитьТрек() {
   try {
     const ответ = await fetch("https://icecast.gtrk22.ru:8443/status-json.xsl");
     const данные = await ответ.json();
-
     let источник = данные.icestats.source;
 
     if (Array.isArray(источник)) {
@@ -210,8 +226,7 @@ async function получитьТрек() {
     } else {
       названиеТрека.textContent = "-- нет данных о треке --";
     }
-
-  } catch (ошибка) {
+  } catch {
     названиеТрека.textContent = "-- сигнал потерян --";
   }
 }
@@ -224,10 +239,36 @@ setInterval(получитьТрек, 10000);
   try {
     await navigator.clipboard.writeText(телефон.textContent);
     строкаСтатуса.textContent = "-- номер скопирован --";
-  } catch (ошибка) {
+  } catch {
     строкаСтатуса.textContent = "-- ошибка копирования --";
   }
 });
+
+/* Смена цвета */
+function сменитьЦвет(цвет) {
+  const корень = document.documentElement;
+
+  if (цвет === 'жёлтый') {
+    корень.style.setProperty('--основной-цвет', '#ffff00');
+    корень.style.setProperty('--тёмный-цвет', '#888800');
+    корень.style.setProperty('--средний-цвет', '#aaaa00');
+    корень.style.setProperty('--светлый-цвет', '#ffff66');
+  }
+
+  if (цвет === 'зелёный') {
+    корень.style.setProperty('--основной-цвет', '#00ff00');
+    корень.style.setProperty('--тёмный-цвет', '#008800');
+    корень.style.setProperty('--средний-цвет', '#00aa00');
+    корень.style.setProperty('--светлый-цвет', '#66ff66');
+  }
+
+  if (цвет === 'красный') {
+    корень.style.setProperty('--основной-цвет', '#ff0000');
+    корень.style.setProperty('--тёмный-цвет', '#880000');
+    корень.style.setProperty('--средний-цвет', '#aa0000');
+    корень.style.setProperty('--светлый-цвет', '#ff4444');
+  }
+}
 </script>
 
 </body>
