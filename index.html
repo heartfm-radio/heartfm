@@ -7,7 +7,6 @@
 
 <style>
 :root {
-  --фон: #000000;
   --основной-цвет: #ff0000;
   --тёмный-цвет: #880000;
   --средний-цвет: #aa0000;
@@ -16,14 +15,14 @@
 
 body {
   margin: 0;
-  background: var(--фон);
+  background: #000;
   color: var(--основной-цвет);
   font-family: monospace;
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  transition: background 0.3s ease, color 0.3s ease;
+  transition: color 0.3s ease;
 }
 
 .wrapper {
@@ -51,7 +50,7 @@ body {
 }
 
 button {
-  background: var(--фон);
+  background: black;
   color: var(--основной-цвет);
   border: 2px solid var(--основной-цвет);
   padding: 12px 30px;
@@ -63,7 +62,7 @@ button {
 
 button:active {
   background: var(--основной-цвет);
-  color: var(--фон);
+  color: black;
 }
 
 .track {
@@ -105,8 +104,7 @@ button:active {
   color: var(--основной-цвет);
 }
 
-.palette,
-.background-palette {
+.palette {
   margin-top: 15px;
 }
 
@@ -116,13 +114,7 @@ button:active {
   height: 18px;
   margin: 0 5px;
   cursor: pointer;
-  border: 2px solid #444;
-}
-
-.label {
-  font-size: 10px;
-  margin-bottom: 5px;
-  opacity: 0.6;
+  border: 2px solid #222;
 }
 
 @media (max-width: 480px) {
@@ -161,31 +153,22 @@ button:active {
   </div>
 
   <div class="social">
-    <a href="https://t.me/heartfmradio" target="_blank">telegram</a> |
+    <a href="https://t.me/heartfmradio" target="_blank">телеграм</a> |
     <a href="https://vk.com/radio_heartfm" target="_blank">вк</a> |
-    <a href="https://max.ru/join/ShDwgYFEq3Rj5EgR2VsWFTFZDQfN6i8RlAIsKBTXR1c" target="_blank">max</a>
+    <a href="https://max.ru/join/ShDwgYFEq3Rj5EgR2VsWFTFZDQfN6i8RlAIsKBTXR1c" target="_blank">макс</a>
   </div>
 
   <div class="phone" id="phoneCopy">
     +79030731059
   </div>
 
-  <!-- Цвет оформления -->
   <div class="palette">
-    <div class="label">цвет оформления</div>
     <span class="color-btn" style="background:#ffff00" onclick="сменитьЦвет('жёлтый')"></span>
     <span class="color-btn" style="background:#00ff00" onclick="сменитьЦвет('зелёный')"></span>
     <span class="color-btn" style="background:#ff0000" onclick="сменитьЦвет('красный')"></span>
     <span class="color-btn" style="background:#ffffff" onclick="сменитьЦвет('белый')"></span>
     <span class="color-btn" style="background:#ff8800" onclick="сменитьЦвет('оранжевый')"></span>
     <span class="color-btn" style="background:#bb00ff" onclick="сменитьЦвет('фиолетовый')"></span>
-  </div>
-
-  <!-- Цвет фона -->
-  <div class="background-palette">
-    <div class="label">цвет фона</div>
-    <span class="color-btn" style="background:#000000" onclick="сменитьФон('чёрный')"></span>
-    <span class="color-btn" style="background:#ffffff" onclick="сменитьФон('белый')"></span>
   </div>
 
 </div>
@@ -221,6 +204,38 @@ let играет = false;
   }
 });
 
+аудио.addEventListener("error", () => {
+  строкаСтатуса.textContent = "-- переподключение... --";
+  setTimeout(() => {
+    if (играет) {
+      аудио.load();
+      аудио.play();
+    }
+  }, 3000);
+});
+
+async function получитьТрек() {
+  try {
+    const ответ = await fetch("https://icecast.gtrk22.ru:8443/status-json.xsl");
+    const данные = await ответ.json();
+    let источник = данные.icestats.source;
+
+    if (Array.isArray(источник)) {
+      источник = источник.find(s => s.listenurl.includes("heartfm"));
+    }
+
+    названиеТрека.textContent = источник && источник.title
+      ? "> " + источник.title
+      : "-- нет данных о треке --";
+
+  } catch {
+    названиеТрека.textContent = "-- сигнал потерян --";
+  }
+}
+
+setInterval(получитьТрек, 10000);
+получитьТрек();
+
 телефон.addEventListener("click", async () => {
   try {
     await navigator.clipboard.writeText(телефон.textContent);
@@ -248,18 +263,6 @@ function сменитьЦвет(цвет) {
   корень.style.setProperty('--тёмный-цвет', тёмн);
   корень.style.setProperty('--средний-цвет', средн);
   корень.style.setProperty('--светлый-цвет', светл);
-}
-
-function сменитьФон(фон) {
-  const корень = document.documentElement;
-
-  if (фон === 'чёрный') {
-    корень.style.setProperty('--фон', '#000000');
-  }
-
-  if (фон === 'белый') {
-    корень.style.setProperty('--фон', '#ffffff');
-  }
 }
 </script>
 
