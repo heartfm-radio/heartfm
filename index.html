@@ -90,8 +90,8 @@ color: var(--средний-цвет);
 .loading-container {
 margin-top: 15px;
 font-family: monospace;
-line-height: 1.1;
-min-height: 60px; /* Ещё уменьшили высоту */
+line-height: 1.2;
+min-height: 80px;
 display: flex;
 align-items: center;
 justify-content: center;
@@ -100,18 +100,31 @@ width: 100%;
 
 .loading-ascii {
 color: var(--светлый-цвет);
-font-size: 8px; /* Уменьшили размер */
+font-size: 18px; /* Увеличил размер для процентов */
 animation: glow 1.5s infinite alternate;
-white-space: pre;
 text-align: center;
 margin: 0 auto;
 display: inline-block;
-transform: scale(0.9); /* Дополнительное уменьшение */
+font-weight: bold;
+letter-spacing: 2px;
+}
+
+.loading-progress {
+color: var(--основной-цвет);
+font-size: 14px;
+margin-top: 8px;
+letter-spacing: 1px;
+animation: blink 1s infinite;
 }
 
 @keyframes glow {
 0% { text-shadow: 0 0 2px var(--светлый-цвет); }
 100% { text-shadow: 0 0 8px var(--основной-цвет); }
+}
+
+@keyframes blink {
+0%, 100% { opacity: 1; }
+50% { opacity: 0.5; }
 }
 
 .chart {
@@ -177,8 +190,10 @@ display: none !important;
 .header { font-size: 20px; }
 button { width: 100%; }
 .loading-ascii { 
-font-size: 5px;
-transform: scale(0.8);
+font-size: 14px;
+}
+.loading-progress {
+font-size: 12px;
 }
 }
 </style>
@@ -199,9 +214,10 @@ transform: scale(0.8);
 <button id="playBtn">▶ ПУСК</button>
 <div class="track" id="trackName"> -- ожидание сигнала -- </div>
 <div class="status" id="statusLine"></div>
-<!-- Контейнер для ASCII анимации загрузки -->
+<!-- Контейнер для анимации загрузки с процентами -->
 <div id="loadingContainer" class="loading-container hidden">
-<div class="loading-ascii" id="loadingAscii"></div>
+<div class="loading-ascii" id="loadingPercent"></div>
+<div class="loading-progress" id="loadingText">ЗАГРУЗКА</div>
 </div>
 </div>
 
@@ -258,53 +274,34 @@ const строкаСтатуса = document.getElementById("statusLine");
 const телефон = document.getElementById("phoneCopy");
 const корень = document.documentElement;
 const loadingContainer = document.getElementById("loadingContainer");
-const loadingAscii = document.getElementById("loadingAscii");
+const loadingPercent = document.getElementById("loadingPercent");
+const loadingText = document.getElementById("loadingText");
 
 let играет = false;
 let loadingInterval = null;
 let loadingTimeout = null;
+let percent = 0;
 
-// Коллекция ASCII-артов для анимации загрузки (УБРАНЫ ВСЕ НАЧАЛЬНЫЕ ПРОБЕЛЫ)
-const asciiFrames = [
-`╔══════════╗
-║ █       ║
-╚══════════╝`,
-`╔══════════╗
-║ ██      ║
-╚══════════╝`,
-`╔══════════╗
-║ ███     ║
-╚══════════╝`,
-`╔══════════╗
-║ ████    ║
-╚══════════╝`,
-`╔══════════╗
-║ █████   ║
-╚══════════╝`,
-`╔══════════╗
-║ ██████  ║
-╚══════════╝`,
-`╔══════════╗
-║ ███████ ║
-╚══════════╝`,
-`╔══════════╗
-║ ████████║
-╚══════════╝`,
-`┌─────────────────┐
-│  ⚡ ЗАГРУЗКА ⚡  │
-│ [=======       ] │
-└─────────────────┘`,
-`┌─────────────────┐
-│  ⚡ ЗАГРУЗКА ⚡  │
-│ [==========    ] │
-└─────────────────┘`,
-`┌─────────────────┐
-│  ⚡ ЗАГРУЗКА ⚡  │
-│ [============= ] │
-└─────────────────┘`
-];
-
-let frameIndex = 0;
+// Ретро-стили для отображения процентов
+function getPercentAscii(percent) {
+    // Создаем ретро-индикатор с процентами
+    const bars = Math.floor(percent / 10); // Количество заполненных полосок (макс 10)
+    const emptyBars = 10 - bars;
+    
+    // Выбираем символ для заполнения в зависимости от процента
+    let fillChar = '█';
+    if (percent > 80) fillChar = '█';
+    else if (percent > 50) fillChar = '▓';
+    else if (percent > 20) fillChar = '▒';
+    else fillChar = '░';
+    
+    const progressBar = fillChar.repeat(bars) + '░'.repeat(emptyBars);
+    
+    // Форматируем процент с ведущими пробелами для ровного отображения
+    let percentStr = percent.toString().padStart(3, ' ');
+    
+    return `[${progressBar}] ${percentStr}%`;
+}
 
 function startLoadingAnimation() {
     // Показываем контейнер с анимацией
@@ -312,13 +309,23 @@ function startLoadingAnimation() {
     // Отключаем кнопку на время загрузки
     кнопка.disabled = true;
     
-    // Запускаем смену кадров
-    loadingInterval = setInterval(() => {
-        loadingAscii.textContent = asciiFrames[frameIndex];
-        frameIndex = (frameIndex + 1) % asciiFrames.length;
-    }, 150); // Смена кадра каждые 150ms для плавности
+    percent = 0;
+    loadingPercent.textContent = getPercentAscii(0);
     
-    // Устанавливаем таймер на 7 секунд (среднее время загрузки)
+    // Запускаем увеличение процентов
+    loadingInterval = setInterval(() => {
+        percent = Math.min(percent + 1, 99); // Увеличиваем до 99%
+        loadingPercent.textContent = getPercentAscii(percent);
+        
+        // Меняем текст в зависимости от процента
+        if (percent < 30) loadingText.textContent = "СОЕДИНЕНИЕ";
+        else if (percent < 60) loadingText.textContent = "ЗАГРУЗКА";
+        else if (percent < 90) loadingText.textContent = "ПОДГОТОВКА";
+        else loadingText.textContent = "ПОЧТИ ГОТОВО";
+        
+    }, 70); // 7000ms / 100 = 70ms на процент
+    
+    // Устанавливаем таймер на 7 секунд
     loadingTimeout = setTimeout(() => {
         stopLoadingAnimation();
         // Пробуем воспроизвести аудио после анимации
@@ -347,12 +354,12 @@ function stopLoadingAnimation() {
     }
     loadingContainer.classList.add("hidden");
     кнопка.disabled = false;
-    frameIndex = 0; // Сбрасываем индекс кадров
+    percent = 0;
 }
 
 кнопка.addEventListener("click", async () => {
     if (!играет) {
-        // Запускаем анимацию загрузки
+        // Запускаем анимацию загрузки с процентами
         startLoadingAnimation();
         строкаСтатуса.textContent = "-- соединяемся... --";
         
