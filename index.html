@@ -91,9 +91,8 @@ color: var(--средний-цвет);
 margin-top: 15px;
 font-family: monospace;
 line-height: 1.2;
-min-height: 100px;
+min-height: 80px; /* Уменьшили высоту, так как убрали текст */
 display: flex;
-flex-direction: column;
 align-items: center;
 justify-content: center;
 width: 100%;
@@ -104,32 +103,14 @@ color: var(--светлый-цвет);
 font-size: 10px;
 animation: glow 1.5s infinite alternate;
 white-space: pre;
+text-align: center;
 margin: 0 auto;
-text-align: center;
-display: flex;
-justify-content: center;
-width: 100%;
-}
-
-.loading-text {
-color: var(--основной-цвет);
-font-size: 14px;
-margin-top: 10px;
-letter-spacing: 4px;
-animation: blink 1s infinite;
-text-align: center;
-width: 100%;
-font-weight: bold;
+display: inline-block;
 }
 
 @keyframes glow {
 0% { text-shadow: 0 0 2px var(--светлый-цвет); }
 100% { text-shadow: 0 0 8px var(--основной-цвет); }
-}
-
-@keyframes blink {
-0%, 100% { opacity: 1; }
-50% { opacity: 0.3; }
 }
 
 .chart {
@@ -197,10 +178,6 @@ button { width: 100%; }
 .loading-ascii { 
 font-size: 6px;
 }
-.loading-text {
-font-size: 12px;
-letter-spacing: 2px;
-}
 }
 </style>
 </head>
@@ -223,7 +200,6 @@ letter-spacing: 2px;
 <!-- Контейнер для ASCII анимации загрузки -->
 <div id="loadingContainer" class="loading-container hidden">
 <div class="loading-ascii" id="loadingAscii"></div>
-<div class="loading-text">ЗАГРУЗКА</div>
 </div>
 </div>
 
@@ -286,44 +262,66 @@ let играет = false;
 let loadingInterval = null;
 let loadingTimeout = null;
 
-// Коллекция ASCII-артов для анимации загрузки (УБРАНЫ ВСЕ НАЧАЛЬНЫЕ ПРОБЕЛЫ)
+// Коллекция ASCII-артов для анимации загрузки (оптимизирована для центрирования)
 const asciiFrames = [
-`╔══════════╗
-║ █       ║
-╚══════════╝`,
-`╔══════════╗
-║ ██      ║
-╚══════════╝`,
-`╔══════════╗
-║ ███     ║
-╚══════════╝`,
-`╔══════════╗
-║ ████    ║
-╚══════════╝`,
-`╔══════════╗
-║ █████   ║
-╚══════════╝`,
-`╔══════════╗
-║ ██████  ║
-╚══════════╝`,
-`╔══════════╗
-║ ███████ ║
-╚══════════╝`,
-`╔══════════╗
-║ ████████║
-╚══════════╝`,
-`┌─────────────────┐
-│  ⚡ ЗАГРУЗКА ⚡  │
-│ [=======       ] │
-└─────────────────┘`,
-`┌─────────────────┐
-│  ⚡ ЗАГРУЗКА ⚡  │
-│ [==========    ] │
-└─────────────────┘`,
-`┌─────────────────┐
-│  ⚡ ЗАГРУЗКА ⚡  │
-│ [============= ] │
-└─────────────────┘`
+`
+   ╔══════════╗
+   ║ █       ║
+   ╚══════════╝
+`,
+`
+   ╔══════════╗
+   ║ ██      ║
+   ╚══════════╝
+`,
+`
+   ╔══════════╗
+   ║ ███     ║
+   ╚══════════╝
+`,
+`
+   ╔══════════╗
+   ║ ████    ║
+   ╚══════════╝
+`,
+`
+   ╔══════════╗
+   ║ █████   ║
+   ╚══════════╝
+`,
+`
+   ╔══════════╗
+   ║ ██████  ║
+   ╚══════════╝
+`,
+`
+   ╔══════════╗
+   ║ ███████ ║
+   ╚══════════╝
+`,
+`
+   ╔══════════╗
+   ║ ████████║
+   ╚══════════╝
+`,
+`
+   ┌─────────────────┐
+   │   ⚡ ЗАГРУЗКА ⚡  │
+   │  [=======       ] │
+   └─────────────────┘
+`,
+`
+   ┌─────────────────┐
+   │   ⚡ ЗАГРУЗКА ⚡  │
+   │  [==========    ] │
+   └─────────────────┘
+`,
+`
+   ┌─────────────────┐
+   │   ⚡ ЗАГРУЗКА ⚡  │
+   │  [============= ] │
+   └─────────────────┘
+`
 ];
 
 let frameIndex = 0;
