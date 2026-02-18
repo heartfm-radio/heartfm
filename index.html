@@ -86,6 +86,43 @@ font-size: 12px;
 color: var(--средний-цвет);
 }
 
+/* Стили для счётчика слушателей */
+.listeners-counter {
+margin-top: 10px;
+padding: 8px;
+border: 1px solid var(--тёмный-цвет);
+border-radius: 0;
+font-size: 14px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+background: rgba(0,0,0,0.3);
+}
+
+.listeners-label {
+color: var(--тёмный-цвет);
+letter-spacing: 1px;
+}
+
+.listeners-value {
+color: var(--основной-цвет);
+font-weight: bold;
+font-size: 18px;
+animation: pulse 2s infinite;
+}
+
+.listeners-value span {
+color: var(--светлый-цвет);
+font-size: 12px;
+margin-left: 5px;
+}
+
+@keyframes pulse {
+0% { opacity: 0.8; }
+50% { opacity: 1; text-shadow: 0 0 5px var(--основной-цвет); }
+100% { opacity: 0.8; }
+}
+
 /* Стили для загрузочной анимации */
 .loading-container {
 margin-top: 15px;
@@ -100,7 +137,7 @@ width: 100%;
 
 .loading-ascii {
 color: var(--светлый-цвет);
-font-size: 18px; /* Увеличил размер для процентов */
+font-size: 18px;
 animation: glow 1.5s infinite alternate;
 text-align: center;
 margin: 0 auto;
@@ -195,6 +232,12 @@ font-size: 14px;
 .loading-progress {
 font-size: 12px;
 }
+.listeners-counter {
+font-size: 12px;
+}
+.listeners-value {
+font-size: 16px;
+}
 }
 </style>
 </head>
@@ -213,6 +256,11 @@ font-size: 12px;
 <div class="player-box">
 <button id="playBtn">▶ ПУСК</button>
 <div class="track" id="trackName"> -- ожидание сигнала -- </div>
+<!-- Счётчик слушателей -->
+<div class="listeners-counter" id="listenersCounter">
+<span class="listeners-label">СЛУШАЮТ:</span>
+<span class="listeners-value" id="listenersCount">--<span>чел.</span></span>
+</div>
 <div class="status" id="statusLine"></div>
 <!-- Контейнер для анимации загрузки с процентами -->
 <div id="loadingContainer" class="loading-container hidden">
@@ -276,6 +324,7 @@ const корень = document.documentElement;
 const loadingContainer = document.getElementById("loadingContainer");
 const loadingPercent = document.getElementById("loadingPercent");
 const loadingText = document.getElementById("loadingText");
+const listenersCount = document.getElementById("listenersCount");
 
 let играет = false;
 let loadingInterval = null;
@@ -284,11 +333,9 @@ let percent = 0;
 
 // Ретро-стили для отображения процентов
 function getPercentAscii(percent) {
-    // Создаем ретро-индикатор с процентами
-    const bars = Math.floor(percent / 10); // Количество заполненных полосок (макс 10)
+    const bars = Math.floor(percent / 10);
     const emptyBars = 10 - bars;
     
-    // Выбираем символ для заполнения в зависимости от процента
     let fillChar = '█';
     if (percent > 80) fillChar = '█';
     else if (percent > 50) fillChar = '▓';
@@ -296,39 +343,31 @@ function getPercentAscii(percent) {
     else fillChar = '░';
     
     const progressBar = fillChar.repeat(bars) + '░'.repeat(emptyBars);
-    
-    // Форматируем процент с ведущими пробелами для ровного отображения
     let percentStr = percent.toString().padStart(3, ' ');
     
     return `[${progressBar}] ${percentStr}%`;
 }
 
 function startLoadingAnimation() {
-    // Показываем контейнер с анимацией
     loadingContainer.classList.remove("hidden");
-    // Отключаем кнопку на время загрузки
     кнопка.disabled = true;
     
     percent = 0;
     loadingPercent.textContent = getPercentAscii(0);
     
-    // Запускаем увеличение процентов
     loadingInterval = setInterval(() => {
-        percent = Math.min(percent + 1, 99); // Увеличиваем до 99%
+        percent = Math.min(percent + 1, 99);
         loadingPercent.textContent = getPercentAscii(percent);
         
-        // Меняем текст в зависимости от процента
         if (percent < 30) loadingText.textContent = "СОЕДИНЕНИЕ";
         else if (percent < 60) loadingText.textContent = "ЗАГРУЗКА";
         else if (percent < 90) loadingText.textContent = "ПОДГОТОВКА";
         else loadingText.textContent = "ПОЧТИ ГОТОВО";
         
-    }, 70); // 7000ms / 100 = 70ms на процент
+    }, 70);
     
-    // Устанавливаем таймер на 7 секунд
     loadingTimeout = setTimeout(() => {
         stopLoadingAnimation();
-        // Пробуем воспроизвести аудио после анимации
         аудио.play()
             .then(() => {
                 кнопка.textContent = "■ СТОП";
@@ -340,7 +379,7 @@ function startLoadingAnimation() {
                 строкаСтатуса.textContent = "-- воспроизведение заблокировано --";
                 кнопка.disabled = false;
             });
-    }, 7000); // 7 секунд анимации
+    }, 7000);
 }
 
 function stopLoadingAnimation() {
@@ -359,25 +398,19 @@ function stopLoadingAnimation() {
 
 кнопка.addEventListener("click", async () => {
     if (!играет) {
-        // Запускаем анимацию загрузки с процентами
         startLoadingAnimation();
         строкаСтатуса.textContent = "-- соединяемся... --";
-        
-        // Предварительная загрузка аудио
         аудио.load();
     } else {
         аудио.pause();
         кнопка.textContent = "▶ ПУСК";
         строкаСтатуса.textContent = "-- остановлено --";
         играет = false;
-        // Останавливаем анимацию, если она вдруг еще идет
         stopLoadingAnimation();
     }
 });
 
-// Обработчики событий аудио
 аудио.addEventListener("playing", () => {
-    // Если аудио начало играть раньше 7 секунд, останавливаем анимацию
     stopLoadingAnimation();
     кнопка.textContent = "■ СТОП";
     строкаСтатуса.textContent = "-- В ЭФИРЕ --";
@@ -397,24 +430,47 @@ function stopLoadingAnimation() {
     }, 3000);
 });
 
-async function получитьТрек() {
+// ===== ПОЛУЧЕНИЕ ТРЕКА И СЛУШАТЕЛЕЙ =====
+async function получитьСтатистику() {
     try {
         const ответ = await fetch("https://icecast.gtrk22.ru:8443/status-json.xsl");
         const данные = await ответ.json();
         let источник = данные.icestats.source;
+        
         if (Array.isArray(источник)) {
-            источник = источник.find(s => s.listenurl.includes("heartfm"));
+            источник = источник.find(s => s.listenurl && s.listenurl.includes("heartfm"));
         }
-        названиеТрека.textContent =
-            источник && источник.title
-            ? "> " + источник.title
-            : "-- нет данных о треке --";
-    } catch {
+        
+        // Обновляем название трека
+        if (источник && источник.title) {
+            названиеТрека.textContent = "> " + источник.title;
+        } else {
+            названиеТрека.textContent = "-- нет данных о треке --";
+        }
+        
+        // Обновляем количество слушателей
+        if (источник && источник.listeners !== undefined) {
+            const слушателей = источник.listeners;
+            listenersCount.innerHTML = слушателей + '<span>чел.</span>';
+            
+            // Анимация при изменении количества
+            listenersCount.style.animation = 'none';
+            listenersCount.offsetHeight; // форсируем reflow
+            listenersCount.style.animation = 'pulse 2s infinite';
+        } else {
+            listenersCount.innerHTML = '?<span>чел.</span>';
+        }
+        
+    } catch (error) {
+        console.error("Ошибка получения статистики:", error);
         названиеТрека.textContent = "-- сигнал потерян --";
+        listenersCount.innerHTML = '--<span>чел.</span>';
     }
 }
-setInterval(получитьТрек, 10000);
-получитьТрек();
+
+// Обновляем статистику каждые 10 секунд
+setInterval(получитьСтатистику, 10000);
+получитьСтатистику();
 
 телефон.addEventListener("click", async () => {
     try {
