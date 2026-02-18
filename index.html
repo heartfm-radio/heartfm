@@ -90,27 +90,36 @@ color: var(--средний-цвет);
 .loading-container {
 margin-top: 15px;
 font-family: monospace;
-white-space: pre;
 line-height: 1.2;
-min-height: 80px;
+min-height: 100px;
 display: flex;
 flex-direction: column;
 align-items: center;
 justify-content: center;
+width: 100%;
 }
 
 .loading-ascii {
 color: var(--светлый-цвет);
 font-size: 10px;
 animation: glow 1.5s infinite alternate;
+display: inline-block;
+text-align: center;
+white-space: pre;
+margin: 0 auto;
+transform: translateX(-4px); /* Тонкая настройка для идеального центрирования */
 }
 
 .loading-text {
 color: var(--основной-цвет);
 font-size: 14px;
-margin-top: 5px;
-letter-spacing: 2px;
+margin-top: 10px;
+letter-spacing: 4px; /* Увеличили межбуквенный интервал для ретро-стиля */
 animation: blink 1s infinite;
+display: inline-block;
+text-align: center;
+width: 100%;
+font-weight: bold;
 }
 
 @keyframes glow {
@@ -185,7 +194,14 @@ display: none !important;
 @media (max-width: 480px) {
 .header { font-size: 20px; }
 button { width: 100%; }
-.loading-ascii { font-size: 6px; }
+.loading-ascii { 
+font-size: 6px;
+transform: translateX(-2px);
+}
+.loading-text {
+font-size: 12px;
+letter-spacing: 2px;
+}
 }
 </style>
 </head>
@@ -271,7 +287,7 @@ let играет = false;
 let loadingInterval = null;
 let loadingTimeout = null;
 
-// Коллекция ASCII-артов для анимации загрузки
+// Коллекция ASCII-артов для анимации загрузки (оптимизирована для центрирования)
 const asciiFrames = [
 `
    ╔══════════╗
@@ -315,20 +331,20 @@ const asciiFrames = [
 `,
 `
    ┌─────────────────┐
-   │ ⚡ ЗАГРУЗКА ⚡ │
-   │ [=======       ]│
+   │   ⚡ ЗАГРУЗКА ⚡  │
+   │  [=======       ] │
    └─────────────────┘
 `,
 `
    ┌─────────────────┐
-   │ ⚡ ЗАГРУЗКА ⚡ │
-   │ [==========    ]│
+   │   ⚡ ЗАГРУЗКА ⚡  │
+   │  [==========    ] │
    └─────────────────┘
 `,
 `
    ┌─────────────────┐
-   │ ⚡ ЗАГРУЗКА ⚡ │
-   │ [============= ]│
+   │   ⚡ ЗАГРУЗКА ⚡  │
+   │  [============= ] │
    └─────────────────┘
 `
 ];
