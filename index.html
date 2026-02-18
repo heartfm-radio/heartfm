@@ -77,11 +77,71 @@ color: var(--светлый-цвет);
 margin-top: 8px;
 font-size: 12px;
 color: var(--средний-цвет);
-min-height: 16px;
 }
 
-.hidden { display:none !important; }
+.chart {
+margin-top: 20px;
+font-size: 14px;
+}
 
+.chart a {
+color: var(--основной-цвет);
+text-decoration: none;
+border-bottom: 1px dotted var(--основной-цвет);
+}
+
+.chart a:hover {
+color: var(--светлый-цвет);
+border-bottom: 1px solid var(--светлый-цвет);
+}
+
+.social {
+margin-top: 20px;
+font-size: 12px;
+color: var(--средний-цвет);
+}
+
+.social a {
+color: var(--средний-цвет);
+text-decoration: none;
+}
+
+.social a:hover {
+color: var(--основной-цвет);
+}
+
+.phone {
+margin-top: 6px;
+font-size: 12px;
+color: var(--тёмный-цвет);
+cursor: pointer;
+}
+
+.phone:hover {
+color: var(--основной-цвет);
+}
+
+.palette {
+margin-top: 15px;
+}
+
+.color-btn {
+display: inline-block;
+width: 18px;
+height: 18px;
+margin: 0 5px;
+cursor: pointer;
+border: 2px solid #222;
+}
+
+.hidden {
+display: none !important;
+}
+
+@media (max-width: 480px) {
+.header { font-size: 20px; }
+button { width: 100%; }
+}
 </style>
 </head>
 
@@ -106,6 +166,40 @@ min-height: 16px;
 ------------------------------------------------------------
 </div>
 
+<div class="chart">
+<a href="https://docs.google.com/forms/d/e/1FAIpQLSeXLI1li1C8l3Ay-u6u1pHFbwgfYJkbAzoqV3KZ6_az8tU0aA/viewform?embedded=true&clckid=61557431"
+   target="_blank">
+хит-парад
+</a>
+</div>
+
+<div class="social">
+<a href="https://t.me/heartfmradio" target="_blank">телеграм</a> |
+<a href="https://vk.com/radio_heartfm" target="_blank">вк</a> |
+<a href="https://max.ru/join/ShDwgYFEq3Rj5EgR2VsWFTFZDQfN6i8RlAIsKBTXR1c" target="_blank">макс</a>
+</div>
+
+<div class="phone" id="phoneCopy">
++79030731059
+</div>
+
+<!-- Цвет текста -->
+<div class="palette">
+<span id="yellowBtn" class="color-btn" style="background:#ffff00" onclick="сменитьЦвет('жёлтый')"></span>
+<span id="greenBtn" class="color-btn" style="background:#00ff00" onclick="сменитьЦвет('зелёный')"></span>
+<span class="color-btn" style="background:#ff0000" onclick="сменитьЦвет('красный')"></span>
+<span id="whiteBtn" class="color-btn" style="background:#ffffff" onclick="сменитьЦвет('белый')"></span>
+<span class="color-btn" style="background:#ff8800" onclick="сменитьЦвет('оранжевый')"></span>
+<span class="color-btn" style="background:#bb00ff" onclick="сменитьЦвет('фиолетовый')"></span>
+<span id="blackTextBtn" class="color-btn" style="background:#000000" onclick="сменитьЦвет('чёрный')"></span>
+</div>
+
+<!-- Цвет фона -->
+<div class="palette">
+<span class="color-btn" style="background:#000000" onclick="сменитьФон('чёрный')"></span>
+<span class="color-btn" style="background:#f5f5f5" onclick="сменитьФон('светлый')"></span>
+</div>
+
 </div>
 
 <audio id="radio" preload="none">
@@ -118,64 +212,30 @@ const аудио = document.getElementById("radio");
 const кнопка = document.getElementById("playBtn");
 const названиеТрека = document.getElementById("trackName");
 const строкаСтатуса = document.getElementById("statusLine");
+const телефон = document.getElementById("phoneCopy");
+const корень = document.documentElement;
 
 let играет = false;
-let загрузкаИнтервал = null;
-
-const кадры = ["|", "/", "—", "\\"];
-let кадр = 0;
-
-function запуститьАнимацию() {
-строкаСтатуса.textContent = "[ loading " + кадры[кадр] + " ]";
-загрузкаИнтервал = setInterval(() => {
-кадр = (кадр + 1) % кадры.length;
-строкаСтатуса.textContent = "[ loading " + кадры[кадр] + " ]";
-}, 200);
-}
-
-function остановитьАнимацию() {
-clearInterval(загрузкаИнтервал);
-загрузкаИнтервал = null;
-}
 
 кнопка.addEventListener("click", async () => {
-
 if (!играет) {
-
-запуститьАнимацию();
-
 try {
 await аудио.play();
+кнопка.textContent = "■ СТОП";
+строкаСтатуса.textContent = "-- В ЭФИРЕ --";
+играет = true;
 } catch {
-остановитьАнимацию();
 строкаСтатуса.textContent = "-- воспроизведение заблокировано --";
-return;
 }
-
 } else {
 аудио.pause();
 кнопка.textContent = "▶ ПУСК";
 строкаСтатуса.textContent = "-- остановлено --";
 играет = false;
 }
-
-});
-
-аудио.addEventListener("playing", () => {
-остановитьАнимацию();
-кнопка.textContent = "■ СТОП";
-строкаСтатуса.textContent = "-- В ЭФИРЕ --";
-играет = true;
-});
-
-аудио.addEventListener("waiting", () => {
-if (!загрузкаИнтервал) {
-запуститьАнимацию();
-}
 });
 
 аудио.addEventListener("error", () => {
-остановитьАнимацию();
 строкаСтатуса.textContent = "-- переподключение... --";
 setTimeout(() => {
 if (играет) {
@@ -185,7 +245,6 @@ if (играет) {
 }, 3000);
 });
 
-// ===== ПОЛУЧЕНИЕ ТРЕКА =====
 async function получитьТрек() {
 try {
 const ответ = await fetch("https://icecast.gtrk22.ru:8443/status-json.xsl");
@@ -202,10 +261,59 @@ if (Array.isArray(источник)) {
 названиеТрека.textContent = "-- сигнал потерян --";
 }
 }
-
 setInterval(получитьТрек, 10000);
 получитьТрек();
 
+телефон.addEventListener("click", async () => {
+try {
+await navigator.clipboard.writeText(телефон.textContent);
+строкаСтатуса.textContent = "-- номер скопирован --";
+} catch {
+строкаСтатуса.textContent = "-- ошибка копирования --";
+}
+});
+
+// ===== СМЕНА ЦВЕТА =====
+function сменитьЦвет(цвет) {
+const темы = {
+'жёлтый': ['#ffff00','#888800','#aaaa00','#ffff66'],
+'зелёный': ['#00ff00','#008800','#00aa00','#66ff66'],
+'красный': ['#ff0000','#880000','#aa0000','#ff4444'],
+'белый': ['#ffffff','#888888','#bbbbbb','#ffffff'],
+'оранжевый': ['#ff8800','#aa5500','#cc6600','#ffbb66'],
+'фиолетовый': ['#bb00ff','#660088','#8800aa','#dd66ff'],
+'чёрный': ['#000000','#222222','#333333','#444444']
+};
+const [осн, тёмн, средн, светл] = темы[цвет];
+корень.style.setProperty('--основной-цвет', осн);
+корень.style.setProperty('--тёмный-цвет', тёмн);
+корень.style.setProperty('--средний-цвет', средн);
+корень.style.setProperty('--светлый-цвет', светл);
+}
+
+// ===== СМЕНА ФОНА =====
+function сменитьФон(тип) {
+const yellow = document.getElementById("yellowBtn");
+const green = document.getElementById("greenBtn");
+const white = document.getElementById("whiteBtn");
+const blackText = document.getElementById("blackTextBtn");
+
+if (тип === 'чёрный') {
+корень.style.setProperty('--фон', '#000000');
+blackText.classList.add("hidden");
+yellow.classList.remove("hidden");
+green.classList.remove("hidden");
+white.classList.remove("hidden");
+}
+
+if (тип === 'светлый') {
+корень.style.setProperty('--фон', '#f5f5f5');
+yellow.classList.add("hidden");
+green.classList.add("hidden");
+white.classList.add("hidden");
+blackText.classList.remove("hidden");
+}
+}
 </script>
 
 </body>
