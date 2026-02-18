@@ -183,18 +183,18 @@ button { width: 100%; }
 +79030731059
 </div>
 
-<!-- КНОПКИ ЦВЕТА ТЕКСТА -->
-<div class="palette" id="textPalette">
+<!-- Цвет текста -->
+<div class="palette">
 <span id="yellowBtn" class="color-btn" style="background:#ffff00" onclick="сменитьЦвет('жёлтый')"></span>
 <span id="greenBtn" class="color-btn" style="background:#00ff00" onclick="сменитьЦвет('зелёный')"></span>
-<span id="redBtn" class="color-btn" style="background:#ff0000" onclick="сменитьЦвет('красный')"></span>
+<span class="color-btn" style="background:#ff0000" onclick="сменитьЦвет('красный')"></span>
 <span id="whiteBtn" class="color-btn" style="background:#ffffff" onclick="сменитьЦвет('белый')"></span>
-<span id="orangeBtn" class="color-btn" style="background:#ff8800" onclick="сменитьЦвет('оранжевый')"></span>
-<span id="purpleBtn" class="color-btn" style="background:#bb00ff" onclick="сменитьЦвет('фиолетовый')"></span>
+<span class="color-btn" style="background:#ff8800" onclick="сменитьЦвет('оранжевый')"></span>
+<span class="color-btn" style="background:#bb00ff" onclick="сменитьЦвет('фиолетовый')"></span>
 <span id="blackTextBtn" class="color-btn" style="background:#000000" onclick="сменитьЦвет('чёрный')"></span>
 </div>
 
-<!-- КНОПКИ ФОНА -->
+<!-- Цвет фона -->
 <div class="palette">
 <span class="color-btn" style="background:#000000" onclick="сменитьФон('чёрный')"></span>
 <span class="color-btn" style="background:#f5f5f5" onclick="сменитьФон('светлый')"></span>
@@ -207,8 +207,73 @@ button { width: 100%; }
 </audio>
 
 <script>
+// ===== ПЛЕЕР =====
+const аудио = document.getElementById("radio");
+const кнопка = document.getElementById("playBtn");
+const названиеТрека = document.getElementById("trackName");
+const строкаСтатуса = document.getElementById("statusLine");
+const телефон = document.getElementById("phoneCopy");
 const корень = document.documentElement;
 
+let играет = false;
+
+кнопка.addEventListener("click", async () => {
+if (!играет) {
+try {
+await аудио.play();
+кнопка.textContent = "■ СТОП";
+строкаСтатуса.textContent = "-- В ЭФИРЕ --";
+играет = true;
+} catch {
+строкаСтатуса.textContent = "-- воспроизведение заблокировано --";
+}
+} else {
+аудио.pause();
+кнопка.textContent = "▶ ПУСК";
+строкаСтатуса.textContent = "-- остановлено --";
+играет = false;
+}
+});
+
+аудио.addEventListener("error", () => {
+строкаСтатуса.textContent = "-- переподключение... --";
+setTimeout(() => {
+if (играет) {
+аудио.load();
+аудио.play();
+}
+}, 3000);
+});
+
+async function получитьТрек() {
+try {
+const ответ = await fetch("https://icecast.gtrk22.ru:8443/status-json.xsl");
+const данные = await ответ.json();
+let источник = данные.icestats.source;
+if (Array.isArray(источник)) {
+источник = источник.find(s => s.listenurl.includes("heartfm"));
+}
+названиеТрека.textContent =
+источник && источник.title
+? "> " + источник.title
+: "-- нет данных о треке --";
+} catch {
+названиеТрека.textContent = "-- сигнал потерян --";
+}
+}
+setInterval(получитьТрек, 10000);
+получитьТрек();
+
+телефон.addEventListener("click", async () => {
+try {
+await navigator.clipboard.writeText(телефон.textContent);
+строкаСтатуса.textContent = "-- номер скопирован --";
+} catch {
+строкаСтатуса.textContent = "-- ошибка копирования --";
+}
+});
+
+// ===== СМЕНА ЦВЕТА =====
 function сменитьЦвет(цвет) {
 const темы = {
 'жёлтый': ['#ffff00','#888800','#aaaa00','#ffff66'],
@@ -226,6 +291,7 @@ const [осн, тёмн, средн, светл] = темы[цвет];
 корень.style.setProperty('--светлый-цвет', светл);
 }
 
+// ===== СМЕНА ФОНА =====
 function сменитьФон(тип) {
 const yellow = document.getElementById("yellowBtn");
 const green = document.getElementById("greenBtn");
