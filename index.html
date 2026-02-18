@@ -77,13 +77,6 @@ color: var(--светлый-цвет);
 margin-top: 8px;
 font-size: 12px;
 color: var(--средний-цвет);
-min-height: 14px;
-}
-
-.loading {
-margin-top: 8px;
-font-size: 12px;
-color: var(--средний-цвет);
 }
 
 .chart {
@@ -167,7 +160,6 @@ button { width: 100%; }
 <button id="playBtn">▶ ПУСК</button>
 <div class="track" id="trackName"> -- ожидание сигнала -- </div>
 <div class="status" id="statusLine"></div>
-<div class="loading hidden" id="loadingLine"></div>
 </div>
 
 <div class="line">
@@ -215,49 +207,26 @@ button { width: 100%; }
 </audio>
 
 <script>
+// ===== ПЛЕЕР =====
 const аудио = document.getElementById("radio");
 const кнопка = document.getElementById("playBtn");
 const названиеТрека = document.getElementById("trackName");
 const строкаСтатуса = document.getElementById("statusLine");
-const строкаЗагрузки = document.getElementById("loadingLine");
 const телефон = document.getElementById("phoneCopy");
 const корень = document.documentElement;
 
 let играет = false;
-let анимация;
-
-function стартАнимации() {
-строкаЗагрузки.classList.remove("hidden");
-let кадры = ["░▒▓", "▒▓░", "▓░▒"];
-let i = 0;
-анимация = setInterval(() => {
-строкаЗагрузки.textContent = "загрузка " + кадры[i % кадры.length];
-i++;
-}, 300);
-}
-
-function стопАнимации() {
-clearInterval(анимация);
-строкаЗагрузки.classList.add("hidden");
-строкаЗагрузки.textContent = "";
-}
 
 кнопка.addEventListener("click", async () => {
 if (!играет) {
-стартАнимации();
-строкаСтатуса.textContent = "";
-setTimeout(async () => {
 try {
 await аудио.play();
 кнопка.textContent = "■ СТОП";
 строкаСтатуса.textContent = "-- В ЭФИРЕ --";
 играет = true;
-стопАнимации();
 } catch {
 строкаСтатуса.textContent = "-- воспроизведение заблокировано --";
-стопАнимации();
 }
-}, 6000);
 } else {
 аудио.pause();
 кнопка.textContent = "▶ ПУСК";
@@ -268,6 +237,12 @@ await аудио.play();
 
 аудио.addEventListener("error", () => {
 строкаСтатуса.textContent = "-- переподключение... --";
+setTimeout(() => {
+if (играет) {
+аудио.load();
+аудио.play();
+}
+}, 3000);
 });
 
 async function получитьТрек() {
@@ -298,6 +273,7 @@ await navigator.clipboard.writeText(телефон.textContent);
 }
 });
 
+// ===== СМЕНА ЦВЕТА =====
 function сменитьЦвет(цвет) {
 const темы = {
 'жёлтый': ['#ffff00','#888800','#aaaa00','#ffff66'],
@@ -315,6 +291,7 @@ const [осн, тёмн, средн, светл] = темы[цвет];
 корень.style.setProperty('--светлый-цвет', светл);
 }
 
+// ===== СМЕНА ФОНА =====
 function сменитьФон(тип) {
 const yellow = document.getElementById("yellowBtn");
 const green = document.getElementById("greenBtn");
