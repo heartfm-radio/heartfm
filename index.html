@@ -80,32 +80,29 @@ color: var(--средний-цвет);
 min-height: 14px;
 }
 
-/* ===== ГАРМОНИЧНАЯ ЗАГРУЗКА ===== */
+/* ===== НОВАЯ ГАРМОНИЧНАЯ ЗАГРУЗКА ===== */
 
 .loading {
-margin-top: 8px;
-font-size: 12px;
-color: var(--средний-цвет);
-display: flex;
-justify-content: center;
-align-items: center;
-gap: 10px;
-min-height: 14px;
+margin-top: 10px;
+min-height: 26px;
 }
 
 .loading-word {
-animation: мягкоеМигание 1.8s infinite ease-in-out;
+font-size: 14px; /* чуть крупнее */
+letter-spacing: 2px;
+animation: мягкоеМигание 2s infinite ease-in-out;
 }
 
 .loading-bar {
-display: inline-block;
-width: 30px; /* фикс ширина чтобы не прыгало */
-text-align: left;
+margin-top: 4px;
+font-size: 10px; /* меньше */
+letter-spacing: 1px;
+color: var(--тёмный-цвет);
 }
 
 @keyframes мягкоеМигание {
 0% { opacity: 1; }
-50% { opacity: 0.5; }
+50% { opacity: 0.6; }
 100% { opacity: 1; }
 }
 
@@ -192,8 +189,8 @@ button { width: 100%; }
 <div class="status" id="statusLine"></div>
 
 <div class="loading hidden" id="loadingLine">
-<span class="loading-word">загрузка</span>
-<span class="loading-bar" id="loadingAnim"></span>
+<div class="loading-word">загрузка</div>
+<div class="loading-bar" id="loadingAnim"></div>
 </div>
 
 </div>
@@ -253,9 +250,19 @@ const корень = document.documentElement;
 let играет = false;
 let анимация;
 
+// ===== ЗАГРУЗКА =====
 function стартАнимации() {
 строкаЗагрузки.classList.remove("hidden");
-let кадры = ["░░░", "▒░░", "▒▒░", "▒▒▒", "▓▒▒", "▓▓▒", "▓▓▓"];
+let кадры = [
+"░░░░░░░░",
+"▒░░░░░░░",
+"▒▒░░░░░░",
+"▒▒▒░░░░░",
+"▓▒▒▒░░░░",
+"▓▓▒▒▒░░░",
+"▓▓▓▒▒▒░░",
+"▓▓▓▓▒▒▒░"
+];
 let i = 0;
 анимация = setInterval(() => {
 анимацияБар.textContent = кадры[i % кадры.length];
@@ -269,10 +276,12 @@ clearInterval(анимация);
 анимацияБар.textContent = "";
 }
 
+// ===== ПЛЕЕР =====
 кнопка.addEventListener("click", async () => {
 if (!играет) {
 стартАнимации();
 строкаСтатуса.textContent = "";
+
 setTimeout(async () => {
 try {
 await аудио.play();
@@ -285,11 +294,43 @@ await аудио.play();
 стопАнимации();
 }
 }, 6000);
+
 } else {
 аудио.pause();
 кнопка.textContent = "▶ ПУСК";
 строкаСтатуса.textContent = "-- остановлено --";
 играет = false;
+}
+});
+
+// ===== ПОЛУЧЕНИЕ ТРЕКА =====
+async function получитьТрек() {
+try {
+const ответ = await fetch("https://icecast.gtrk22.ru:8443/status-json.xsl");
+const данные = await ответ.json();
+let источник = данные.icestats.source;
+if (Array.isArray(источник)) {
+источник = источник.find(s => s.listenurl.includes("heartfm"));
+}
+названиеТрека.textContent =
+источник && источник.title
+? "> " + источник.title
+: "-- нет данных о треке --";
+} catch {
+названиеТрека.textContent = "-- сигнал потерян --";
+}
+}
+
+setInterval(получитьТрек, 10000);
+получитьТрек();
+
+// ===== КОПИРОВАНИЕ =====
+телефон.addEventListener("click", async () => {
+try {
+await navigator.clipboard.writeText(телефон.textContent);
+строкаСтатуса.textContent = "-- номер скопирован --";
+} catch {
+строкаСтатуса.textContent = "-- ошибка копирования --";
 }
 });
 </script>
