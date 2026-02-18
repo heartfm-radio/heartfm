@@ -7,174 +7,192 @@
 
 <style>
 :root {
-  --основной-цвет: #ff0000;
-  --тёмный-цвет: #880000;
-  --средний-цвет: #aa0000;
-  --светлый-цвет: #ff4444;
+--основной-цвет: #ff0000;
+--тёмный-цвет: #880000;
+--средний-цвет: #aa0000;
+--светлый-цвет: #ff4444;
 }
 
 body {
-  margin: 0;
-  background: #000;
-  color: var(--основной-цвет);
-  font-family: monospace;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  transition: color 0.3s ease;
+margin: 0;
+background: #000;
+color: var(--основной-цвет);
+font-family: monospace;
+display: flex;
+justify-content: center;
+align-items: center;
+min-height: 100vh;
+transition: color 0.3s ease;
 }
 
 .wrapper {
-  width: 95%;
-  max-width: 600px;
-  text-align: center;
+width: 95%;
+max-width: 600px;
+text-align: center;
 }
 
 .header {
-  font-size: 28px;
-  letter-spacing: 4px;
-  margin-bottom: 20px;
+font-size: 28px;
+letter-spacing: 4px;
+margin-bottom: 20px;
 }
 
 .line {
-  color: var(--тёмный-цвет);
-  margin: 10px 0;
-  word-break: break-all;
+color: var(--тёмный-цвет);
+margin: 10px 0;
+word-break: break-all;
 }
 
 .player-box {
-  border: 2px dashed var(--основной-цвет);
-  padding: 20px;
-  transition: border 0.3s ease;
+border: 2px dashed var(--основной-цвет);
+padding: 20px;
+transition: border 0.3s ease;
 }
 
 button {
-  background: black;
-  color: var(--основной-цвет);
-  border: 2px solid var(--основной-цвет);
-  padding: 12px 30px;
-  font-family: monospace;
-  font-size: 16px;
-  cursor: pointer;
-  transition: all 0.3s ease;
+background: black;
+color: var(--основной-цвет);
+border: 2px solid var(--основной-цвет);
+padding: 12px 30px;
+font-family: monospace;
+font-size: 16px;
+cursor: pointer;
+transition: all 0.3s ease;
 }
 
 button:active {
-  background: var(--основной-цвет);
-  color: black;
+background: var(--основной-цвет);
+color: black;
 }
 
 .track {
-  margin-top: 15px;
-  font-size: 14px;
-  min-height: 20px;
-  color: var(--светлый-цвет);
+margin-top: 15px;
+font-size: 14px;
+min-height: 20px;
+color: var(--светлый-цвет);
 }
 
 .status {
-  margin-top: 8px;
-  font-size: 12px;
-  color: var(--средний-цвет);
+margin-top: 8px;
+font-size: 12px;
+color: var(--средний-цвет);
+}
+
+/* Блок хит-парада */
+.chart {
+margin-top: 20px;
+font-size: 14px;
+}
+
+.chart a {
+color: var(--основной-цвет);
+text-decoration: none;
+border-bottom: 1px dotted var(--основной-цвет);
+}
+
+.chart a:hover {
+color: var(--светлый-цвет);
+border-bottom: 1px solid var(--светлый-цвет);
 }
 
 .social {
-  margin-top: 20px;
-  font-size: 12px;
-  color: var(--средний-цвет);
+margin-top: 20px;
+font-size: 12px;
+color: var(--средний-цвет);
 }
 
 .social a {
-  color: var(--средний-цвет);
-  text-decoration: none;
+color: var(--средний-цвет);
+text-decoration: none;
 }
 
 .social a:hover {
-  color: var(--основной-цвет);
+color: var(--основной-цвет);
 }
 
 .phone {
-  margin-top: 6px;
-  font-size: 12px;
-  color: var(--тёмный-цвет);
-  cursor: pointer;
+margin-top: 6px;
+font-size: 12px;
+color: var(--тёмный-цвет);
+cursor: pointer;
 }
 
 .phone:hover {
-  color: var(--основной-цвет);
+color: var(--основной-цвет);
 }
 
 .palette {
-  margin-top: 15px;
+margin-top: 15px;
 }
 
 .color-btn {
-  display: inline-block;
-  width: 18px;
-  height: 18px;
-  margin: 0 5px;
-  cursor: pointer;
-  border: 2px solid #222;
+display: inline-block;
+width: 18px;
+height: 18px;
+margin: 0 5px;
+cursor: pointer;
+border: 2px solid #222;
 }
 
 @media (max-width: 480px) {
-  .header { font-size: 20px; }
-  button { width: 100%; }
+.header { font-size: 20px; }
+button { width: 100%; }
 }
 </style>
 </head>
 
 <body>
-
 <div class="wrapper">
 
-  <div class="header">
-    ----- HEART FM -----
-  </div>
+<div class="header">
+----- HEART FM -----
+</div>
 
-  <div class="line">
-    ------------------------------------------------------------
-  </div>
+<div class="line">
+------------------------------------------------------------
+</div>
 
-  <div class="player-box">
+<div class="player-box">
+<button id="playBtn">▶ ПУСК</button>
+<div class="track" id="trackName"> -- ожидание сигнала -- </div>
+<div class="status" id="statusLine"></div>
+</div>
 
-    <button id="playBtn">▶ ПУСК</button>
+<div class="line">
+------------------------------------------------------------
+</div>
 
-    <div class="track" id="trackName">
-      -- ожидание сигнала --
-    </div>
+<!-- ССЫЛКА НА ХИТ-ПАРАД -->
+<div class="chart">
+<a href="https://docs.google.com/forms/d/e/1FAIpQLSeXLI1li1C8l3Ay-u6u1pHFbwgfYJkbAzoqV3KZ6_az8tU0aA/viewform?embedded=true&clckid=61557431"
+   target="_blank">
+хит-парад
+</a>
+</div>
 
-    <div class="status" id="statusLine"></div>
+<div class="social">
+<a href="https://t.me/heartfmradio" target="_blank">телеграм</a> |
+<a href="https://vk.com/radio_heartfm" target="_blank">вк</a> |
+<a href="https://max.ru/join/ShDwgYFEq3Rj5EgR2VsWFTFZDQfN6i8RlAIsKBTXR1c" target="_blank">макс</a>
+</div>
 
-  </div>
+<div class="phone" id="phoneCopy">
++79030731059
+</div>
 
-  <div class="line">
-    ------------------------------------------------------------
-  </div>
-
-  <div class="social">
-    <a href="https://t.me/heartfmradio" target="_blank">телеграм</a> |
-    <a href="https://vk.com/radio_heartfm" target="_blank">вк</a> |
-    <a href="https://max.ru/join/ShDwgYFEq3Rj5EgR2VsWFTFZDQfN6i8RlAIsKBTXR1c" target="_blank">макс</a>
-  </div>
-
-  <div class="phone" id="phoneCopy">
-    +79030731059
-  </div>
-
-  <div class="palette">
-    <span class="color-btn" style="background:#ffff00" onclick="сменитьЦвет('жёлтый')"></span>
-    <span class="color-btn" style="background:#00ff00" onclick="сменитьЦвет('зелёный')"></span>
-    <span class="color-btn" style="background:#ff0000" onclick="сменитьЦвет('красный')"></span>
-    <span class="color-btn" style="background:#ffffff" onclick="сменитьЦвет('белый')"></span>
-    <span class="color-btn" style="background:#ff8800" onclick="сменитьЦвет('оранжевый')"></span>
-    <span class="color-btn" style="background:#bb00ff" onclick="сменитьЦвет('фиолетовый')"></span>
-  </div>
+<div class="palette">
+<span class="color-btn" style="background:#ffff00" onclick="сменитьЦвет('жёлтый')"></span>
+<span class="color-btn" style="background:#00ff00" onclick="сменитьЦвет('зелёный')"></span>
+<span class="color-btn" style="background:#ff0000" onclick="сменитьЦвет('красный')"></span>
+<span class="color-btn" style="background:#ffffff" onclick="сменитьЦвет('белый')"></span>
+<span class="color-btn" style="background:#ff8800" onclick="сменитьЦвет('оранжевый')"></span>
+<span class="color-btn" style="background:#bb00ff" onclick="сменитьЦвет('фиолетовый')"></span>
+</div>
 
 </div>
 
 <audio id="radio" preload="none">
-  <source src="https://icecast.gtrk22.ru:8443/heartfm" type="audio/mpeg">
+<source src="https://icecast.gtrk22.ru:8443/heartfm" type="audio/mpeg">
 </audio>
 
 <script>
@@ -183,86 +201,80 @@ const кнопка = document.getElementById("playBtn");
 const названиеТрека = document.getElementById("trackName");
 const строкаСтатуса = document.getElementById("statusLine");
 const телефон = document.getElementById("phoneCopy");
-
 let играет = false;
 
 кнопка.addEventListener("click", async () => {
-  if (!играет) {
-    try {
-      await аудио.play();
-      кнопка.textContent = "■ СТОП";
-      строкаСтатуса.textContent = "-- В ЭФИРЕ --";
-      играет = true;
-    } catch {
-      строкаСтатуса.textContent = "-- воспроизведение заблокировано --";
-    }
-  } else {
-    аудио.pause();
-    кнопка.textContent = "▶ ПУСК";
-    строкаСтатуса.textContent = "-- остановлено --";
-    играет = false;
-  }
+if (!играет) {
+try {
+await аудио.play();
+кнопка.textContent = "■ СТОП";
+строкаСтатуса.textContent = "-- В ЭФИРЕ --";
+играет = true;
+} catch {
+строкаСтатуса.textContent = "-- воспроизведение заблокировано --";
+}
+} else {
+аудио.pause();
+кнопка.textContent = "▶ ПУСК";
+строкаСтатуса.textContent = "-- остановлено --";
+играет = false;
+}
 });
 
 аудио.addEventListener("error", () => {
-  строкаСтатуса.textContent = "-- переподключение... --";
-  setTimeout(() => {
-    if (играет) {
-      аудио.load();
-      аудио.play();
-    }
-  }, 3000);
+строкаСтатуса.textContent = "-- переподключение... --";
+setTimeout(() => {
+if (играет) {
+аудио.load();
+аудио.play();
+}
+}, 3000);
 });
 
 async function получитьТрек() {
-  try {
-    const ответ = await fetch("https://icecast.gtrk22.ru:8443/status-json.xsl");
-    const данные = await ответ.json();
-    let источник = данные.icestats.source;
-
-    if (Array.isArray(источник)) {
-      источник = источник.find(s => s.listenurl.includes("heartfm"));
-    }
-
-    названиеТрека.textContent = источник && источник.title
-      ? "> " + источник.title
-      : "-- нет данных о треке --";
-
-  } catch {
-    названиеТрека.textContent = "-- сигнал потерян --";
-  }
+try {
+const ответ = await fetch("https://icecast.gtrk22.ru:8443/status-json.xsl");
+const данные = await ответ.json();
+let источник = данные.icestats.source;
+if (Array.isArray(источник)) {
+источник = источник.find(s => s.listenurl.includes("heartfm"));
+}
+названиеТрека.textContent =
+источник && источник.title
+? "> " + источник.title
+: "-- нет данных о треке --";
+} catch {
+названиеТрека.textContent = "-- сигнал потерян --";
+}
 }
 
 setInterval(получитьТрек, 10000);
 получитьТрек();
 
 телефон.addEventListener("click", async () => {
-  try {
-    await navigator.clipboard.writeText(телефон.textContent);
-    строкаСтатуса.textContent = "-- номер скопирован --";
-  } catch {
-    строкаСтатуса.textContent = "-- ошибка копирования --";
-  }
+try {
+await navigator.clipboard.writeText(телефон.textContent);
+строкаСтатуса.textContent = "-- номер скопирован --";
+} catch {
+строкаСтатуса.textContent = "-- ошибка копирования --";
+}
 });
 
 function сменитьЦвет(цвет) {
-  const корень = document.documentElement;
-
-  const темы = {
-    'жёлтый': ['#ffff00','#888800','#aaaa00','#ffff66'],
-    'зелёный': ['#00ff00','#008800','#00aa00','#66ff66'],
-    'красный': ['#ff0000','#880000','#aa0000','#ff4444'],
-    'белый': ['#ffffff','#888888','#bbbbbb','#ffffff'],
-    'оранжевый': ['#ff8800','#aa5500','#cc6600','#ffbb66'],
-    'фиолетовый': ['#bb00ff','#660088','#8800aa','#dd66ff']
-  };
-
-  const [осн, тёмн, средн, светл] = темы[цвет];
-
-  корень.style.setProperty('--основной-цвет', осн);
-  корень.style.setProperty('--тёмный-цвет', тёмн);
-  корень.style.setProperty('--средний-цвет', средн);
-  корень.style.setProperty('--светлый-цвет', светл);
+const корень = document.documentElement;
+const темы = {
+'жёлтый': ['#ffff00','#888800','#aaaa00','#ffff66'],
+'зелёный': ['#00ff00','#008800','#00aa00','#66ff66'],
+'красный': ['#ff0000','#880000','#aa0000','#ff4444'],
+'белый': ['#ffffff','#888888','#bbbbbb','#ffffff'],
+'оранжевый': ['#ff8800','#aa5500','#cc6600','#ffbb66'],
+'фиолетовый': ['#bb00ff','#660088','#8800aa','#dd66ff']
+};
+const [осн, тёмн, средн, светл] = темы[цвет];
+корень.style.setProperty('--основной-цвет', осн);
+корень.style.setProperty('--тёмный-цвет', тёмн);
+корень.style.setProperty('--средний-цвет', средн);
+корень.style.setProperty('--светлый-цвет', светл);
 }
 </script>
 
