@@ -6,24 +6,15 @@
 <title>HEART FM</title>
 
 <style>
-:root {
---основной-цвет: #ff0000;
---тёмный-цвет: #880000;
---средний-цвет: #aa0000;
---светлый-цвет: #ff4444;
---фон: #000000;
-}
-
 body {
 margin: 0;
-background: var(--фон);
-color: var(--основной-цвет);
+background: #000;
+color: #ff0000;
 font-family: monospace;
 display: flex;
 justify-content: center;
 align-items: center;
 min-height: 100vh;
-transition: all 0.3s ease;
 }
 
 .wrapper {
@@ -33,306 +24,194 @@ text-align: center;
 }
 
 .header {
-font-size: 28px;
-letter-spacing: 4px;
+font-size: 26px;
+letter-spacing: 3px;
 margin-bottom: 20px;
 }
 
 .line {
-color: var(--тёмный-цвет);
+color: #880000;
 margin: 10px 0;
-word-break: break-all;
 }
 
 .player-box {
-border: 2px dashed var(--основной-цвет);
+border: 2px dashed #ff0000;
 padding: 20px;
-transition: border 0.3s ease;
 }
 
 button {
-background: var(--фон);
-color: var(--основной-цвет);
-border: 2px solid var(--основной-цвет);
+background: #000;
+color: #ff0000;
+border: 2px solid #ff0000;
 padding: 12px 30px;
 font-family: monospace;
 font-size: 16px;
 cursor: pointer;
-transition: all 0.3s ease;
 }
 
 button:active {
-background: var(--основной-цвет);
-color: var(--фон);
+background: #ff0000;
+color: #000;
 }
 
 .track {
 margin-top: 15px;
 font-size: 14px;
 min-height: 20px;
-color: var(--светлый-цвет);
+color: #ff4444;
 }
 
 .status {
-margin-top: 8px;
-font-size: 12px;
-color: var(--средний-цвет);
-min-height: 14px;
-}
-
-/* ===== НОВАЯ ГАРМОНИЧНАЯ ЗАГРУЗКА ===== */
-
-.loading {
 margin-top: 10px;
-min-height: 26px;
+min-height: 30px;
 }
 
-.loading-word {
-font-size: 14px; /* чуть крупнее */
+.loading-text {
+font-size: 18px;
+}
+
+.loading-anim {
+font-size: 12px;
 letter-spacing: 2px;
-animation: мягкоеМигание 2s infinite ease-in-out;
-}
-
-.loading-bar {
-margin-top: 4px;
-font-size: 10px; /* меньше */
-letter-spacing: 1px;
-color: var(--тёмный-цвет);
-}
-
-@keyframes мягкоеМигание {
-0% { opacity: 1; }
-50% { opacity: 0.6; }
-100% { opacity: 1; }
-}
-
-.chart {
-margin-top: 20px;
-font-size: 14px;
-}
-
-.chart a {
-color: var(--основной-цвет);
-text-decoration: none;
-border-bottom: 1px dotted var(--основной-цвет);
-}
-
-.chart a:hover {
-color: var(--светлый-цвет);
-border-bottom: 1px solid var(--светлый-цвет);
-}
-
-.social {
-margin-top: 20px;
-font-size: 12px;
-color: var(--средний-цвет);
-}
-
-.social a {
-color: var(--средний-цвет);
-text-decoration: none;
-}
-
-.social a:hover {
-color: var(--основной-цвет);
-}
-
-.phone {
-margin-top: 6px;
-font-size: 12px;
-color: var(--тёмный-цвет);
-cursor: pointer;
-}
-
-.phone:hover {
-color: var(--основной-цвет);
-}
-
-.palette {
-margin-top: 15px;
-}
-
-.color-btn {
-display: inline-block;
-width: 18px;
-height: 18px;
-margin: 0 5px;
-cursor: pointer;
-border: 2px solid #222;
-}
-
-.hidden {
-display: none !important;
-}
-
-@media (max-width: 480px) {
-.header { font-size: 20px; }
-button { width: 100%; }
 }
 </style>
 </head>
 
 <body>
+
 <div class="wrapper">
 
-<div class="header">
------ HEART FM -----
-</div>
-
-<div class="line">
-------------------------------------------------------------
-</div>
+<div class="header">----- HEART FM -----</div>
+<div class="line">------------------------------------------</div>
 
 <div class="player-box">
 <button id="playBtn">▶ ПУСК</button>
-<div class="track" id="trackName"> -- ожидание сигнала -- </div>
-<div class="status" id="statusLine"></div>
+<div class="track" id="trackName">-- ожидание сигнала --</div>
 
-<div class="loading hidden" id="loadingLine">
-<div class="loading-word">загрузка</div>
-<div class="loading-bar" id="loadingAnim"></div>
+<div class="status">
+<div class="loading-text" id="loadingText"></div>
+<div class="loading-anim" id="loadingAnim"></div>
 </div>
 
 </div>
 
-<div class="line">
-------------------------------------------------------------
-</div>
-
-<div class="chart">
-<a href="https://docs.google.com/forms/d/e/1FAIpQLSeXLI1li1C8l3Ay-u6u1pHFbwgfYJkbAzoqV3KZ6_az8tU0aA/viewform?embedded=true&clckid=61557431" target="_blank">
-хит-парад
-</a>
-</div>
-
-<div class="social">
-<a href="https://t.me/heartfmradio" target="_blank">телеграм</a> |
-<a href="https://vk.com/radio_heartfm" target="_blank">вк</a> |
-<a href="https://max.ru/join/ShDwgYFEq3Rj5EgR2VsWFTFZDQfN6i8RlAIsKBTXR1c" target="_blank">макс</a>
-</div>
-
-<div class="phone" id="phoneCopy">
-+79030731059
-</div>
-
-<!-- Цвет текста -->
-<div class="palette">
-<span id="yellowBtn" class="color-btn" style="background:#ffff00" onclick="сменитьЦвет('жёлтый')"></span>
-<span id="greenBtn" class="color-btn" style="background:#00ff00" onclick="сменитьЦвет('зелёный')"></span>
-<span class="color-btn" style="background:#ff0000" onclick="сменитьЦвет('красный')"></span>
-<span id="whiteBtn" class="color-btn" style="background:#ffffff" onclick="сменитьЦвет('белый')"></span>
-<span class="color-btn" style="background:#ff8800" onclick="сменитьЦвет('оранжевый')"></span>
-<span class="color-btn" style="background:#bb00ff" onclick="сменитьЦвет('фиолетовый')"></span>
-<span id="blackTextBtn" class="color-btn" style="background:#000000" onclick="сменитьЦвет('чёрный')"></span>
-</div>
-
-<div class="palette">
-<span class="color-btn" style="background:#000000" onclick="сменитьФон('чёрный')"></span>
-<span class="color-btn" style="background:#f5f5f5" onclick="сменитьФон('светлый')"></span>
-</div>
+<div class="line">------------------------------------------</div>
 
 </div>
 
-<audio id="radio" preload="none">
-<source src="https://icecast.gtrk22.ru:8443/heartfm" type="audio/mpeg">
-</audio>
+<audio id="radio" playsinline preload="none"></audio>
 
 <script>
-const аудио = document.getElementById("radio");
-const кнопка = document.getElementById("playBtn");
-const названиеТрека = document.getElementById("trackName");
-const строкаСтатуса = document.getElementById("statusLine");
-const строкаЗагрузки = document.getElementById("loadingLine");
-const анимацияБар = document.getElementById("loadingAnim");
-const телефон = document.getElementById("phoneCopy");
-const корень = document.documentElement;
 
-let играет = false;
-let анимация;
+const STREAM_URL = "https://icecast.gtrk22.ru:8443/heartfm";
+const STATUS_URL = "https://icecast.gtrk22.ru:8443/status-json.xsl";
 
-// ===== ЗАГРУЗКА =====
-function стартАнимации() {
-строкаЗагрузки.classList.remove("hidden");
-let кадры = [
-"░░░░░░░░",
-"▒░░░░░░░",
-"▒▒░░░░░░",
-"▒▒▒░░░░░",
-"▓▒▒▒░░░░",
-"▓▓▒▒▒░░░",
-"▓▓▓▒▒▒░░",
-"▓▓▓▓▒▒▒░"
+const audio = document.getElementById("radio");
+const button = document.getElementById("playBtn");
+const trackName = document.getElementById("trackName");
+const loadingText = document.getElementById("loadingText");
+const loadingAnim = document.getElementById("loadingAnim");
+
+let isPlaying = false;
+let loaderInterval = null;
+
+const frames = [
+"▁ ▂ ▃ ▄ ▅ ▆ ▇ █",
+"▂ ▃ ▄ ▅ ▆ ▇ █ ▁",
+"▃ ▄ ▅ ▆ ▇ █ ▁ ▂",
+"▄ ▅ ▆ ▇ █ ▁ ▂ ▃"
 ];
-let i = 0;
-анимация = setInterval(() => {
-анимацияБар.textContent = кадры[i % кадры.length];
-i++;
+
+let frameIndex = 0;
+
+function startLoader() {
+loadingText.textContent = "ЗАГРУЗКА";
+loadingAnim.textContent = frames[frameIndex];
+
+loaderInterval = setInterval(() => {
+frameIndex = (frameIndex + 1) % frames.length;
+loadingAnim.textContent = frames[frameIndex];
 }, 250);
 }
 
-function стопАнимации() {
-clearInterval(анимация);
-строкаЗагрузки.classList.add("hidden");
-анимацияБар.textContent = "";
+function stopLoader() {
+clearInterval(loaderInterval);
+loaderInterval = null;
+loadingText.textContent = "";
+loadingAnim.textContent = "";
 }
 
-// ===== ПЛЕЕР =====
-кнопка.addEventListener("click", async () => {
-if (!играет) {
-стартАнимации();
-строкаСтатуса.textContent = "";
+button.addEventListener("click", () => {
 
-setTimeout(async () => {
-try {
-await аудио.play();
-кнопка.textContent = "■ СТОП";
-строкаСтатуса.textContent = "-- В ЭФИРЕ --";
-играет = true;
-стопАнимации();
-} catch {
-строкаСтатуса.textContent = "-- воспроизведение заблокировано --";
-стопАнимации();
+if (!isPlaying) {
+
+startLoader();
+
+audio.src = STREAM_URL;
+audio.load();
+
+const playPromise = audio.play();
+
+if (playPromise !== undefined) {
+playPromise
+.then(() => {
+})
+.catch(() => {
+loadingText.textContent = "Нажмите ещё раз";
+});
 }
-}, 6000);
 
 } else {
-аудио.pause();
-кнопка.textContent = "▶ ПУСК";
-строкаСтатуса.textContent = "-- остановлено --";
-играет = false;
+
+audio.pause();
+button.textContent = "▶ ПУСК";
+trackName.textContent = "-- остановлено --";
+stopLoader();
+isPlaying = false;
+
 }
+
 });
 
-// ===== ПОЛУЧЕНИЕ ТРЕКА =====
-async function получитьТрек() {
-try {
-const ответ = await fetch("https://icecast.gtrk22.ru:8443/status-json.xsl");
-const данные = await ответ.json();
-let источник = данные.icestats.source;
-if (Array.isArray(источник)) {
-источник = источник.find(s => s.listenurl.includes("heartfm"));
-}
-названиеТрека.textContent =
-источник && источник.title
-? "> " + источник.title
-: "-- нет данных о треке --";
-} catch {
-названиеТрека.textContent = "-- сигнал потерян --";
-}
-}
-
-setInterval(получитьТрек, 10000);
-получитьТрек();
-
-// ===== КОПИРОВАНИЕ =====
-телефон.addEventListener("click", async () => {
-try {
-await navigator.clipboard.writeText(телефон.textContent);
-строкаСтатуса.textContent = "-- номер скопирован --";
-} catch {
-строкаСтатуса.textContent = "-- ошибка копирования --";
-}
+audio.addEventListener("playing", () => {
+stopLoader();
+button.textContent = "■ СТОП";
+isPlaying = true;
 });
+
+audio.addEventListener("waiting", () => {
+if (!loaderInterval) startLoader();
+});
+
+audio.addEventListener("error", () => {
+loadingText.textContent = "Ошибка подключения";
+});
+
+// === ПОЛУЧЕНИЕ НАЗВАНИЯ ТРЕКА ===
+
+async function fetchTrack() {
+try {
+const response = await fetch(STATUS_URL);
+const data = await response.json();
+
+let source = data.icestats.source;
+
+if (Array.isArray(source)) {
+source = source.find(s => s.listenurl.includes("heartfm"));
+}
+
+if (source && source.title) {
+trackName.textContent = "> " + source.title;
+}
+
+} catch {
+trackName.textContent = "-- нет данных --";
+}
+}
+
+setInterval(fetchTrack, 10000);
+fetchTrack();
+
 </script>
 
 </body>
